@@ -19,32 +19,19 @@
   --sand-100:#faf5e9;
   --lavender-100:#f3f0f9; --lavender-ink:#6c5a92;
   --cream-100:#fdf8e3;
+  --rose-100:#fbeef0; --rose-ink:#a24f5e;
+  --mint-100:#e9f6f0; --mint-ink:#3f8d6d;
   --gold:#a97d2a; --gold-bg:#f6ecd6;
   --urgent:#b23b28; --urgent-bg:#faeae6;
   --sky:#3f6f92; --sky-bg:#eaf2f8;
   --btn-bg:#3f6b3f; --btn-text:#fbfaf4;
-  --shadow:0 1px 2px rgba(20,20,20,.03);
+  --shadow:0 1px 2px rgba(20,20,20,.02);
   --radius-lg:18px; --radius-md:13px; --radius-sm:10px;
   --focus:#3f6b3f;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --ink:#eae7da; --ink-soft:#b6b4a6; --ink-faint:#82877a;
-    --bg:#15180f; --surface:#1d2117; --line:#2f3427;
-    --cell-bg:#20241a;
-    --green-600:#8fc478; --green-700:#a3d38d; --green-100:#212a1b;
-    --blue-100:#1a222a; --blue-ink:#8bb6d6;
-    --sand-100:#241f16;
-    --lavender-100:#211d29; --lavender-ink:#b6a2dc;
-    --cream-100:#2c2712;
-    --gold:#dcae5f; --gold-bg:#2c2410;
-    --urgent:#e0796a; --urgent-bg:#31201b;
-    --sky:#8bb6d6; --sky-bg:#1a2530;
-    --btn-bg:#7fb166; --btn-text:#12160d;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 24px -16px rgba(0,0,0,.5);
-    --focus:#8fc478;
-  }
-}
+/* دارنا يعتمد هوية فاتحة ثابتة دائمًا (Clean / Premium / Family Portal) — لا نتبع
+   إعداد الوضع الداكن في نظام الجهاز تلقائيًا، حتى لا تظهر الواجهة غامقة على أي شخص
+   بالعائلة بشكل غير مقصود. القيم أدناه محفوظة لتفعيل تبديل يدوي مستقبلي لو احتجناه. */
 :root[data-theme="dark"]{
   --ink:#eae7da; --ink-soft:#b6b4a6; --ink-faint:#82877a;
   --bg:#15180f; --surface:#1d2117; --line:#2f3427;
@@ -54,6 +41,8 @@
   --sand-100:#241f16;
   --lavender-100:#211d29; --lavender-ink:#b6a2dc;
   --cream-100:#2c2712;
+  --rose-100:#2a1a1c; --rose-ink:#e2a6ae;
+  --mint-100:#17271f; --mint-ink:#7fd1ac;
   --gold:#dcae5f; --gold-bg:#2c2410;
   --urgent:#e0796a; --urgent-bg:#31201b;
   --sky:#8bb6d6; --sky-bg:#1a2530;
@@ -78,9 +67,10 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .shell{max-width:1180px; margin:0 auto; padding:0 16px;}
 
 /* header */
-.topbar{position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.topbar{position:sticky; top:0; z-index:20; background:var(--bg); background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
 .topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; flex-wrap:wrap;}
 .brand{display:flex; flex-direction:column; gap:1px;}
+.brand-link{text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:1px;}
 .brand-name{font-size:26px; color:var(--green-600); line-height:1;}
 .brand-sub{font-size:12.5px; color:var(--ink-faint);}
 .topbar-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
@@ -92,6 +82,11 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .admin-toggle .icon{width:13px; height:13px;}
 .admin-toggle.on{background:var(--green-600); color:var(--btn-text); border-color:var(--green-600);}
 .today-line{padding:2px 16px 12px; font-size:13px; color:var(--ink-soft);}
+
+/* page nav (person/section pages) */
+.page-nav{max-width:1180px; margin:0 auto; padding:10px 16px 0;}
+.back-link{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; padding:6px 4px;}
+.back-link:hover{color:var(--green-600);}
 
 /* identity banner */
 .identity-banner{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 16px; margin:0 auto 10px; max-width:1180px; background:var(--lavender-100); border-radius:var(--radius-md); font-size:13.5px;}
@@ -107,7 +102,86 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 #searchResults{max-width:1180px; margin:0 auto; padding:0 16px 14px;}
 #searchResults:empty{display:none;}
 
-/* quick add */
+/* people strip (home) */
+.people-strip-wrap{padding:6px 16px 14px;}
+.people-strip{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
+@media (max-width:640px){ .people-strip{display:flex; overflow-x:auto; padding-bottom:2px;} }
+.person-card{flex:none; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:var(--ink); padding:10px 4px; border-radius:var(--radius-md); min-width:64px;}
+.person-card:hover{background:var(--cell-bg);}
+.person-avatar{width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; border:1px solid var(--line); flex:none;}
+.person-name{font-size:12px; font-weight:600; text-align:center; white-space:nowrap;}
+.person-mood-em{font-size:11px;}
+
+/* shortcuts */
+.shortcuts-wrap{padding:0 16px 16px;}
+.shortcuts-grid{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+@media (max-width:640px){ .shortcuts-grid{grid-template-columns:repeat(3,1fr);} }
+.shortcut-card{display:flex; flex-direction:column; align-items:center; gap:7px; text-decoration:none; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-md); padding:14px 6px; text-align:center; box-shadow:var(--shadow);}
+.shortcut-card:hover{border-color:var(--green-600);}
+.shortcut-card .icon{width:20px; height:20px; color:var(--green-600);}
+.shortcut-card span{font-size:11.5px; font-weight:600;}
+
+/* home results grid */
+.home-grid{max-width:1180px; margin:0 auto; padding:0 16px 20px; display:grid; grid-template-columns:1fr; gap:12px;}
+@media (min-width:760px){ .home-grid{grid-template-columns:1fr 1fr;} }
+@media (min-width:1080px){ .home-grid{grid-template-columns:1fr 1fr 1fr;} }
+.home-grid .card{margin:0;}
+.card-head .see-all{margin-inline-start:auto;}
+.see-all{font-size:11.5px; color:var(--green-600); font-weight:700; text-decoration:none; white-space:nowrap;}
+.see-all:hover{text-decoration:underline;}
+.hgrid-span2{grid-column:span 1;}
+@media (min-width:760px){ .hgrid-span2{grid-column:span 2;} }
+
+.mood-row{display:flex; flex-wrap:wrap; gap:8px;}
+.mood-chip{display:flex; align-items:center; gap:6px; background:var(--cell-bg); border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:12.5px;}
+.mood-chip .em{font-size:16px;}
+.mood-chip.unset{opacity:.5;}
+
+.fav-row{display:flex; flex-wrap:wrap; gap:8px;}
+.fav-chip{display:flex; align-items:center; gap:6px; background:var(--gold-bg); color:var(--gold); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:600; text-decoration:none;}
+.fav-chip .icon{width:12px; height:12px;}
+
+.activity-list{display:flex; flex-direction:column; gap:0;}
+.activity-row{font-size:12.5px; color:var(--ink-soft); padding:7px 0; border-bottom:1px dashed var(--line);}
+.activity-row:last-child{border-bottom:none;}
+.activity-row b{color:var(--ink); font-weight:600;}
+.activity-time{color:var(--ink-faint); font-size:11px; margin-inline-start:6px;}
+
+/* person page */
+.person-hero-wrap{padding:6px 16px 14px;}
+.person-hero{max-width:1180px; margin:0 auto; display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+.person-hero .person-avatar{width:60px; height:60px; font-size:28px;}
+.person-hero-name{font-size:22px; font-weight:700; font-family:"Markazi Text",serif;}
+.person-hero-mood{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:6px;}
+.mood-btn{border:1.5px solid var(--line); background:var(--surface); border-radius:999px; width:36px; height:36px; font-size:17px; display:flex; align-items:center; justify-content:center;}
+.mood-btn.active{border-color:var(--green-600); background:var(--green-100);}
+.mood-note-input{border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:7px 10px; font-size:12.5px; min-width:150px;}
+
+.quickadd-grid-wrap{padding:0 16px 16px;}
+.quickadd-grid{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+@media (max-width:640px){ .quickadd-grid{grid-template-columns:repeat(3,1fr);} }
+.quickadd-tile{display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--surface); border:1.5px dashed var(--line); border-radius:var(--radius-md); padding:12px 6px; font-size:11.5px; font-weight:600; color:var(--ink-soft);}
+.quickadd-tile:hover{border-color:var(--green-600); color:var(--green-600);}
+.quickadd-tile .icon{width:18px; height:18px;}
+
+/* section pages */
+.section-title-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; max-width:1180px; margin:0 auto; padding:10px 16px 14px;}
+.section-title{font-size:24px; font-family:"Markazi Text",serif; font-weight:700; color:var(--green-600); display:flex; align-items:center; gap:8px; margin:0;}
+.section-wrap{max-width:1180px; margin:0 auto; padding:0 16px 24px; display:flex; flex-direction:column; gap:14px;}
+
+/* entity form */
+.entity-form-host{padding:0 16px 14px;}
+.entity-form-host.hidden{display:none;}
+.entity-form-card{max-width:1180px; margin:0 auto; background:var(--surface); border:1.5px dashed var(--green-600); border-radius:var(--radius-lg); padding:16px;}
+.confirm-sender{font-size:12.5px; color:var(--ink-soft); margin:0 0 10px; background:var(--lavender-100); display:inline-block; padding:4px 10px; border-radius:999px;}
+.field-grid{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.field-grid .field{flex:1; min-width:170px;}
+.field-grid label{display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; font-weight:600;}
+.field-grid input[type=text],.field-grid input[type=date],.field-grid input[type=email],.field-grid input[type=tel],.field-grid select,.field-grid textarea{width:100%; border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:10px 12px; font-size:14.5px; font-family:inherit;}
+.field-grid textarea{resize:vertical; min-height:64px;}
+.field-grid input[disabled]{background:var(--cell-bg); color:var(--ink-soft);}
+
+/* quick add / family box (moved to its own page) */
 .quickadd-wrap{padding:4px 16px 12px;}
 .quickadd-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:14px; max-width:1180px; margin:0 auto;}
 .quickadd-label{font-size:13px; color:var(--ink-soft); margin:0 2px 8px; font-weight:600;}
@@ -123,7 +197,6 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .btn-sm{padding:8px 14px; font-size:13.5px; border-radius:10px;}
 .quickadd-hint{margin:8px 2px 0; font-size:12px; color:var(--ink-faint);}
 
-/* family box */
 .familybox-wrap{padding:0 16px 14px;}
 .card--familybox{background:var(--lavender-100); border-color:var(--line); max-width:1180px; margin:0 auto;}
 .familybox-hint{margin:0 0 10px; font-size:12.5px; color:var(--ink-soft);}
@@ -133,37 +206,19 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .familybox-form input#familyboxText{flex:1; min-width:160px;}
 .familybox-form .btn{flex:none;}
 
-/* confirm panel */
-.confirm-panel{padding:0 16px 14px;}
-.confirm-panel.hidden{display:none;}
-.confirm-card{max-width:1180px; margin:0 auto; background:var(--surface); border:1.5px dashed var(--green-600); border-radius:var(--radius-lg); padding:16px;}
-.confirm-title{font-size:13px; font-weight:700; color:var(--green-600); margin:0 0 10px;}
-.confirm-subtitle{font-size:12px; font-weight:700; color:var(--ink-soft); margin:2px 0 8px;}
-.confirm-sender{font-size:12.5px; color:var(--ink-soft); margin:0 0 10px; background:var(--lavender-100); display:inline-block; padding:4px 10px; border-radius:999px;}
 .type-chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
 .type-chip{border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:8px 16px; font-size:14px; font-weight:600;}
 .type-chip.active{background:var(--green-600); border-color:var(--green-600); color:var(--btn-text);}
 .type-chip.small{padding:6px 12px; font-size:12.5px;}
-.confirm-fields{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
-.confirm-fields .field{flex:1; min-width:180px;}
-.confirm-fields label{display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; font-weight:600;}
-.confirm-fields input[type="text"], .confirm-fields input[type="date"]{width:100%; border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:10px 12px; font-size:14.5px;}
+.confirm-title{font-size:13px; font-weight:700; color:var(--green-600); margin:0 0 10px;}
+.confirm-subtitle{font-size:12px; font-weight:700; color:var(--ink-soft); margin:2px 0 8px;}
 .confirm-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
 .confirm-danger{margin-inline-end:auto;}
 .btn-danger{background:transparent; color:var(--urgent); border:1.5px solid var(--urgent-bg);}
 .btn-danger:hover{background:var(--urgent-bg);}
 
-/* upcoming strip */
-.upcoming-strip{padding:2px 16px 14px;}
-.upcoming-strip .shell{display:flex; gap:10px; overflow-x:auto; padding-bottom:2px; scrollbar-width:thin;}
-.upcoming-chip{flex:none; display:flex; align-items:center; gap:9px; background:var(--sand-100); border:1px solid var(--line); border-radius:999px; padding:9px 16px 9px 12px; font-size:13.5px; white-space:nowrap;}
-.upcoming-chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-.upcoming-chip b{font-weight:700; color:var(--ink);}
-.upcoming-chip span{color:var(--ink-soft);}
-.upcoming-empty{color:var(--ink-faint); font-size:13.5px; padding:6px 4px;}
-
-/* stat tiles: this week / urgent-now */
-.stats-row{display:grid; grid-template-columns:1fr; gap:12px; max-width:1180px; margin:0 auto; padding:0 16px 14px;}
+/* stat tiles */
+.stats-row{display:grid; grid-template-columns:1fr; gap:12px;}
 @media (min-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} }
 .stat-tile{padding:14px 16px;}
 .card--thisweek{background:var(--sand-100);}
@@ -178,17 +233,13 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .card--pending{background:var(--surface); border:1.5px dashed var(--green-600); max-width:1180px; margin:0 auto;}
 .pending-actions{flex-wrap:wrap; gap:6px;}
 
-/* layout */
-.layout{max-width:1180px; margin:0 auto; padding:0 16px 24px; display:grid; grid-template-columns:1fr; gap:16px;}
-@media (min-width:960px){
-  .layout{grid-template-columns:340px 1fr; align-items:start;}
-  .layout .calendar-col{order:2;}
-  .layout .requests-col{order:1;}
-}
+/* card */
 .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:18px;}
 .card--reminders{background:var(--green-100);}
 .card--requests{background:var(--blue-100);}
-.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.card--tasks{background:var(--mint-100);}
+.card--bills{background:var(--rose-100);}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:8px;}
 .card-title{font-size:16px; font-weight:700; margin:0; display:flex; align-items:center; gap:8px;}
 .card-title .icon{color:var(--green-600);}
 .card-count{font-size:12px; color:var(--ink-faint); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:2px 9px;}
@@ -225,16 +276,18 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 
 /* lists */
 .list{display:flex; flex-direction:column; gap:8px;}
+.list.compact{gap:0;}
 .row{display:flex; align-items:flex-start; gap:10px; padding:11px 12px; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface);}
 .row.pending-row{flex-wrap:wrap;}
 .row.pending-row .row-actions{width:100%; margin-top:6px;}
 .row-main{flex:1; min-width:0;}
 .row-title{font-size:14.5px; font-weight:600; color:var(--ink); word-break:break-word;}
 .row-title.done{color:var(--ink-faint); text-decoration:line-through; font-weight:500;}
+.row-title.clickable{cursor:pointer;}
 .row-sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
 .row-meta{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
 .row-note{font-size:12px; color:var(--ink-soft); margin-top:2px; font-style:italic;}
-.row-badges{margin-top:4px;}
+.row-badges{margin-top:4px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;}
 .row-actions{display:flex; align-items:center; gap:6px; flex:none;}
 .icon-btn{width:32px; height:32px; border-radius:9px; border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); flex:none;}
 .icon-btn .icon{width:16px; height:16px;}
@@ -249,16 +302,30 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .status-btn:hover{background:var(--green-100);}
 .status-btn.is-done{border-color:var(--line); color:var(--ink-faint); background:var(--surface);}
 .status-secondary{border:none; background:none; color:var(--ink-faint); font-size:12px; text-decoration:underline; padding:4px;}
+.star-btn{background:none; border:none; color:var(--ink-faint); font-size:15px; padding:3px; flex:none; display:flex; align-items:center;}
+.star-btn .icon{width:16px; height:16px;}
+.star-btn.on{color:var(--gold);}
+.tel-link{color:var(--green-600); text-decoration:none; display:flex; align-items:center; gap:4px; font-size:12.5px; font-weight:600; margin-top:4px;}
+
+/* vehicles */
+.vehicles-grid{display:grid; grid-template-columns:1fr; gap:12px;}
+@media (min-width:700px){ .vehicles-grid{grid-template-columns:1fr 1fr;} }
+.vehicle-card{border-top:3px solid var(--green-600);}
+.vehicle-facts{margin:10px 0;}
+.vehicle-fact{display:flex; justify-content:space-between; gap:8px; font-size:12.5px; padding:5px 0; border-bottom:1px dashed var(--line);}
+.vehicle-fact:last-child{border-bottom:none;}
+.vehicle-fact b{color:var(--ink-soft); font-weight:600;}
 
 /* fab */
-.fab{position:fixed; inset-inline-end:20px; inset-block-end:24px; width:58px; height:58px; border-radius:50%; background:var(--btn-bg); color:var(--btn-text); border:none; box-shadow:0 10px 26px -6px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; font-size:26px; z-index:30;}
+.fab{position:fixed; inset-inline-end:20px; inset-block-end:24px; width:58px; height:58px; border-radius:50%; background:var(--btn-bg); color:var(--btn-text); border:none; box-shadow:0 8px 18px -6px rgba(20,20,20,.16); display:flex; align-items:center; justify-content:center; font-size:26px; z-index:30;}
 .fab .icon{width:26px; height:26px;}
 .fab:hover{background:var(--green-700);}
+.fab.hidden{display:none;}
 @media (max-width:640px){ .fab{inset-block-end:calc(20px + env(safe-area-inset-bottom));} }
 
 /* toast */
 .toast-host{position:fixed; inset-inline:0; bottom:20px; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:60; pointer-events:none; padding:0 16px;}
-.toast{pointer-events:auto; background:var(--ink); color:var(--bg); border-radius:12px; padding:11px 16px; display:flex; align-items:center; gap:12px; font-size:13.5px; box-shadow:0 10px 26px -8px rgba(0,0,0,.4); opacity:1; transform:translateY(0); transition:opacity .25s, transform .25s; max-width:92vw;}
+.toast{pointer-events:auto; background:var(--ink); color:var(--bg); border-radius:12px; padding:11px 16px; display:flex; align-items:center; gap:12px; font-size:13.5px; box-shadow:0 8px 20px -8px rgba(20,20,20,.28); opacity:1; transform:translateY(0); transition:opacity .25s, transform .25s; max-width:92vw;}
 .toast.out{opacity:0; transform:translateY(8px);}
 .toast-action{background:none; border:none; color:var(--green-100); font-weight:700; font-size:13px; white-space:nowrap;}
 
@@ -286,6 +353,7 @@ var WEEKDAYS_FULL=["الأحد","الاثنين","الثلاثاء","الأرب�
 var MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
 function fmtHumanDate(iso){
+  if(!iso) return "";
   var d=parseISO(iso);
   return d.getDate()+" "+MONTHS[d.getMonth()];
 }
@@ -310,6 +378,28 @@ function importanceBadge(imp){
   if(imp==="مهم") return '<span class="pill warn">مهم</span>';
   return "";
 }
+function arDaysPhrase(n){
+  if(n<0) return "متأخر "+Math.abs(n)+" يوم";
+  if(n===0) return "اليوم";
+  if(n===1) return "غدًا";
+  if(n===2) return "بعد يومين";
+  if(n<=10) return "بعد "+n+" أيام";
+  return "بعد "+n+" يومًا";
+}
+function fmtRelativeLong(iso){
+  var diff=daysBetween(todayDate(), parseISO(iso));
+  if(diff>=2 && diff<=6) return WEEKDAYS_FULL[parseISO(iso).getDay()];
+  if(diff>20) return fmtHumanDate(iso);
+  return arDaysPhrase(diff);
+}
+function fmtAddedAt(iso){
+  if(!iso) return "";
+  var d=new Date(iso); d.setHours(0,0,0,0);
+  var diff=daysBetween(d, todayDate());
+  if(diff<=0) return "اليوم";
+  if(diff===1) return "أمس";
+  return "قبل "+diff+" يوم";
+}
 
 /* ---------- icons ---------- */
 var ICON={
@@ -326,11 +416,24 @@ var ICON={
   renew:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>',
   cake:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/><path d="M4 21h16"/><path d="M12 13V8"/><path d="M9 13V9"/><path d="M15 13V9"/><circle cx="12" cy="5" r="1.4"/></svg>',
   flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/></svg>',
-  plane:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 4l-8 19-2-8-8-3z"/></svg>'
+  plane:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 4l-8 19-2-8-8-3z"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14.14 18.18 21 12 17.27 5.82 21 7.5 14.14 2 9.24 8.91 8.63"/></svg>',
+  starFilled:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14.14 18.18 21 12 17.27 5.82 21 7.5 14.14 2 9.24 8.91 8.63"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  car:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V11l2-5h14l2 5v6"/></svg>',
+  receipt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h16v20l-3-2-3 2-3-2-3 2-3-2-1 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>',
+  layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+  hash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>',
+  note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>',
+  smile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.2L4 3a1 1 0 0 0-1 1l.2 5.59a2 2 0 0 0 .61 1.41l9.58 9.59a2 2 0 0 0 2.82 0l4.38-4.38a2 2 0 0 0 0-2.8z"/><circle cx="8" cy="8" r="1.4"/></svg>'
 };
-function icon(name){return '<span class="icon">'+ICON[name]+'</span>';}
+function icon(name){return '<span class="icon">'+(ICON[name]||"")+'</span>';}
 
-/* ---------- calendar type metadata (V2): icon + color-kind per item type ---------- */
+/* ---------- calendar type metadata: icon + color-kind per item type ---------- */
 var TYPE_META={
   "مناسبة":{icon:"calendar", kind:"gold"},
   "موعد":{icon:"calendar", kind:"appt"},
@@ -342,6 +445,48 @@ var TYPE_META={
 };
 function typeMeta(type){ return TYPE_META[type] || TYPE_META["مناسبة"]; }
 
+/* ---------- V2: people, moods, sections ---------- */
+var PEOPLE=[
+  {name:"أمي", emoji:"👩", tint:"sand", gender:"f"},
+  {name:"أبوي", emoji:"👨", tint:"blue", gender:"m"},
+  {name:"همس", emoji:"🧕", tint:"lavender", gender:"f"},
+  {name:"رنيم", emoji:"🧕", tint:"rose", gender:"f"},
+  {name:"ناصر", emoji:"🧑", tint:"green", gender:"m"},
+  {name:"موكا", emoji:"👩‍🦱", tint:"mint", gender:"f"},
+  {name:"منور", emoji:"👩‍🦰", tint:"cream", gender:"f"}
+];
+function personOf(name){ return PEOPLE.find(function(p){ return p.name===name; }); }
+function verbFor(name, m, f){ var p=personOf(name); return (p && p.gender==="f") ? f : m; }
+
+var MOOD_OPTIONS=[
+  {key:"ممتاز", em:"😄"},
+  {key:"تمام", em:"🙂"},
+  {key:"عادي", em:"😐"},
+  {key:"تعبان", em:"😴"},
+  {key:"مضغوط", em:"😤"}
+];
+function moodEmoji(key){ var m=MOOD_OPTIONS.find(function(x){return x.key===key;}); return m?m.em:"😐"; }
+
+var SECTIONS=[
+  {key:"vehicles", label:"السيارات", icon:"car"},
+  {key:"bills", label:"الفواتير والخدمات", icon:"receipt"},
+  {key:"numbers", label:"أرقام مهمة", icon:"hash"},
+  {key:"subscriptions", label:"الاشتراكات", icon:"layers"},
+  {key:"requests", label:"الطلبات", icon:"list"},
+  {key:"tasks", label:"المهام", icon:"tag"},
+  {key:"calendar", label:"التقويم", icon:"calendar"},
+  {key:"familybox", label:"صندوق العائلة", icon:"mail"}
+];
+function sectionMeta(key){ return SECTIONS.find(function(s){return s.key===key;}) || SECTIONS[0]; }
+
+var ITEM_TYPES=["مناسبة","موعد","تذكير","تجديد","عيد ميلاد","مناسبة وطنية","سفر"];
+var IMPORTANCE_OPTS=["عادي","مهم","عاجل"];
+var REQUEST_STATUS=["جديد","جاري","تم"];
+var TASK_STATUS=["جديد","جاري","مكتمل"];
+var SUBSCRIPTION_STATUS=["نشط","ملغى"];
+var BILL_TYPES=["كهرباء","ماء","جوال","إنترنت","خدمات عامة","اشتراك","أخرى"];
+var NUMBER_CATEGORIES=["فني مكيفات","سباك","كهربائي","شركة الإنترنت","مستشفى","عيادة","خدمة عامة","شخص مهم للعائلة"];
+
 /* ---------- Supabase client (shared family database) ---------- */
 var SUPABASE_URL="https://puxvfngwbgoqxqaphayv.supabase.co";
 var SUPABASE_ANON_KEY="sb_publishable_Fu-_Lf8TlAf3bjynAHr7Ug_uwLbO2Jq";
@@ -350,27 +495,54 @@ var sb=(typeof window!=="undefined" && window.supabase && typeof window.supabase
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 
-var state={items:[],requests:[],submissions:[]};
+var state={items:[],requests:[],submissions:[],tasks:[],bills:[],subscriptions:[],vehicles:[],numbers:[],references:[],notes:[],moods:[],activity:[]};
 
 function getDisplayName(){ try{ return localStorage.getItem("darna_display_name")||""; }catch(e){ return ""; } }
 function setDisplayName(n){ try{ localStorage.setItem("darna_display_name", n); }catch(e){} }
 
 /* ---------- row <-> app-state mapping (Supabase columns are snake_case) ---------- */
-function rowToItem(row){ return {id:row.id, title:row.title, date:row.date, type:row.type, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", addedAt:row.created_at}; }
-function rowToRequest(row){ return {id:row.id, text:row.text, status:row.status, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", forWhom:row.for_whom||"", addedAt:row.created_at}; }
+function rowToItem(row){ return {id:row.id, title:row.title, date:row.date, type:row.type, note:row.note||"", importance:row.importance||"عادي", forWhom:row.for_whom||"", favorite:!!row.favorite, addedBy:row.added_by||"", addedAt:row.created_at}; }
+function rowToRequest(row){ return {id:row.id, text:row.text, status:row.status, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", forWhom:row.for_whom||"", assignee:row.assignee||"", dueDate:row.due_date||"", favorite:!!row.favorite, addedAt:row.created_at}; }
 function rowToSubmission(row){ return {id:row.id, senderName:row.sender_name, text:row.text, suggestedType:row.suggested_type, suggestedDate:row.suggested_date, status:row.status, source:row.source, createdAt:row.created_at}; }
+function rowToTask(row){ return {id:row.id, task:row.task, assignee:row.assignee||"", forWhom:row.for_whom||"", date:row.date||"", importance:row.importance||"عادي", note:row.note||"", status:row.status||"جديد", favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToBill(row){ return {id:row.id, name:row.name, type:row.type||"", accountNumber:row.account_number||"", provider:row.provider||"", dueDate:row.due_date||"", responsible:row.responsible||"", note:row.note||"", favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToSubscription(row){ return {id:row.id, name:row.name, owner:row.owner||"", email:row.email||"", renewalDate:row.renewal_date||"", note:row.note||"", status:row.status||"نشط", favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToVehicle(row){ return {id:row.id, name:row.name, owner:row.owner||"", plateNumber:row.plate_number||"", insuranceDate:row.insurance_date||"", registrationDate:row.registration_date||"", inspectionDate:row.inspection_date||"", maintenanceNote:row.maintenance_note||"", oilChangeDate:row.oil_change_date||"", note:row.note||"", favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToNumber(row){ return {id:row.id, name:row.name, category:row.category||"", phone:row.phone||"", note:row.note||"", forWhom:row.for_whom||"", favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToReference(row){ return {id:row.id, person:row.person, entity:row.entity||"", refType:row.ref_type||"", refValue:row.ref_value||"", note:row.note||"", category:row.category||"", addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToNote(row){ return {id:row.id, person:row.person, text:row.text, favorite:!!row.favorite, addedBy:row.added_by||"", createdAt:row.created_at}; }
+function rowToMood(row){ return {id:row.id, person:row.person, mood:row.mood, note:row.note||"", moodDate:row.mood_date, createdAt:row.created_at}; }
+function rowToActivity(row){ return {id:row.id, actor:row.actor||"", actionText:row.action_text, entityType:row.entity_type||"", createdAt:row.created_at}; }
 
 /* ---------- remote data loading ---------- */
 function loadDashboard(){
   if(!sb) return Promise.resolve();
   return Promise.all([
     sb.from("items").select("*").order("date",{ascending:true}),
-    sb.from("requests").select("*").order("created_at",{ascending:false})
+    sb.from("requests").select("*").order("created_at",{ascending:false}),
+    sb.from("tasks").select("*").order("date",{ascending:true, nullsFirst:false}),
+    sb.from("bills_services").select("*").order("due_date",{ascending:true, nullsFirst:false}),
+    sb.from("subscriptions").select("*").order("renewal_date",{ascending:true, nullsFirst:false}),
+    sb.from("vehicles").select("*").order("created_at",{ascending:true}),
+    sb.from("important_numbers").select("*").order("created_at",{ascending:false}),
+    sb.from("person_references").select("*").order("created_at",{ascending:false}),
+    sb.from("person_notes").select("*").order("created_at",{ascending:false}),
+    sb.from("moods").select("*").order("mood_date",{ascending:false}),
+    sb.from("activity_log").select("*").order("created_at",{ascending:false}).limit(15)
   ]).then(function(res){
-    var itemsRes=res[0], reqRes=res[1];
-    if(itemsRes.error || reqRes.error){ dbStatus="error"; return; }
-    state.items=(itemsRes.data||[]).map(rowToItem);
-    state.requests=(reqRes.data||[]).map(rowToRequest);
+    var bad=res.some(function(r){ return r.error; });
+    if(bad){ dbStatus="error"; return; }
+    state.items=(res[0].data||[]).map(rowToItem);
+    state.requests=(res[1].data||[]).map(rowToRequest);
+    state.tasks=(res[2].data||[]).map(rowToTask);
+    state.bills=(res[3].data||[]).map(rowToBill);
+    state.subscriptions=(res[4].data||[]).map(rowToSubscription);
+    state.vehicles=(res[5].data||[]).map(rowToVehicle);
+    state.numbers=(res[6].data||[]).map(rowToNumber);
+    state.references=(res[7].data||[]).map(rowToReference);
+    state.notes=(res[8].data||[]).map(rowToNote);
+    state.moods=(res[9].data||[]).map(rowToMood);
+    state.activity=(res[10].data||[]).map(rowToActivity);
     dbStatus="ok";
   }, function(){ dbStatus="error"; });
 }
@@ -402,7 +574,7 @@ function signOutAdmin(){
   return sb.auth.signOut();
 }
 
-/* ---------- quick-add parsing ---------- */
+/* ---------- quick-add parsing (used by family box free-text box) ---------- */
 var REQUEST_KW=["جيب","هات","اشتري","إشتري","احجز","إحجز","اطلب","إطلب","ابغى","أبغى","نبغى","نحتاج","تحتاج له","دلوني على"];
 var EVENT_KW={
   "عيد ميلاد":["عيد ميلاد","ميلاد"],
@@ -484,184 +656,319 @@ function showToast(msg, actionLabel, actionFn, duration){
   setTimeout(function(){ el.classList.add("out"); setTimeout(function(){ el.remove(); },300); }, duration);
 }
 
+/* ---------- router ---------- */
+function parseRoute(){
+  var h=(window.location.hash||"").replace(/^#\/?/,"");
+  if(!h) return {page:"home"};
+  var parts=h.split("/");
+  if(parts[0]==="person") return {page:"person", person:decodeURIComponent(parts[1]||"")};
+  if(parts[0]==="section") return {page:"section", section:parts[1]||""};
+  return {page:"home"};
+}
+function navHref(page, key){
+  if(page==="person") return "#/person/"+encodeURIComponent(key);
+  if(page==="section") return "#/section/"+key;
+  return "#/";
+}
+
 /* ---------- render state (ui-only) ---------- */
 var today=todayDate();
 var viewYear=today.getFullYear(), viewMonth=today.getMonth();
-var confirmState=null; /* {mode:'add'|'edit'|'approve-submission', id, kind, type, title, date, importance, note, senderName} */
-var editingRequestId=null;
+var route=parseRoute();
+var entityForm=null; /* {entity, mode:'add'|'edit'|'approve-submission', id, fields:{...}, presetPerson} */
 var searchQuery="";
 
-/* ---------- render ---------- */
+/* ---------- entity engine: table + field <-> row mapping for the generic form ---------- */
+var ENTITY_CONFIG={
+  item:{
+    table:"items", list:function(){return state.items;},
+    toRow:function(f){ return {title:f.title, date:f.date||toISO(today), type:f.type||"مناسبة", note:f.note||"", importance:f.importance||"عادي", for_whom:f.forWhom||"", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToItem,
+    editFields:function(rec){ return {title:rec.title, date:rec.date, type:rec.type, importance:rec.importance, note:rec.note, forWhom:rec.forWhom, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  request:{
+    table:"requests", list:function(){return state.requests;},
+    toRow:function(f){ return {text:f.title, status:f.status||"جديد", note:f.note||"", importance:f.importance||"عادي", for_whom:f.forWhom||"", assignee:f.assignee||"", due_date:f.date||null, added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToRequest,
+    editFields:function(rec){ return {title:rec.text, forWhom:rec.forWhom, assignee:rec.assignee, date:rec.dueDate, importance:rec.importance, status:rec.status, note:rec.note, addedBy:rec.addedBy}; },
+    favoriteCol:false
+  },
+  task:{
+    table:"tasks", list:function(){return state.tasks;},
+    toRow:function(f){ return {task:f.task, assignee:f.assignee||"", for_whom:f.forWhom||"", date:f.date||null, importance:f.importance||"عادي", note:f.note||"", status:f.status||"جديد", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToTask,
+    editFields:function(rec){ return {task:rec.task, assignee:rec.assignee, forWhom:rec.forWhom, date:rec.date, importance:rec.importance, note:rec.note, status:rec.status, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  bill:{
+    table:"bills_services", list:function(){return state.bills;},
+    toRow:function(f){ return {name:f.name, type:f.type||"", account_number:f.accountNumber||"", provider:f.provider||"", due_date:f.dueDate||null, responsible:f.responsible||"", note:f.note||"", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToBill,
+    editFields:function(rec){ return {name:rec.name, type:rec.type, accountNumber:rec.accountNumber, provider:rec.provider, dueDate:rec.dueDate, responsible:rec.responsible, note:rec.note, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  subscription:{
+    table:"subscriptions", list:function(){return state.subscriptions;},
+    toRow:function(f){ return {name:f.name, owner:f.owner||"", email:f.email||"", renewal_date:f.renewalDate||null, note:f.note||"", status:f.status||"نشط", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToSubscription,
+    editFields:function(rec){ return {name:rec.name, owner:rec.owner, email:rec.email, renewalDate:rec.renewalDate, note:rec.note, status:rec.status, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  vehicle:{
+    table:"vehicles", list:function(){return state.vehicles;},
+    toRow:function(f){ return {name:f.name, owner:f.owner||"", plate_number:f.plateNumber||"", insurance_date:f.insuranceDate||null, registration_date:f.registrationDate||null, inspection_date:f.inspectionDate||null, maintenance_note:f.maintenanceNote||"", oil_change_date:f.oilChangeDate||null, note:f.note||"", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToVehicle,
+    editFields:function(rec){ return {name:rec.name, owner:rec.owner, plateNumber:rec.plateNumber, insuranceDate:rec.insuranceDate, registrationDate:rec.registrationDate, inspectionDate:rec.inspectionDate, maintenanceNote:rec.maintenanceNote, oilChangeDate:rec.oilChangeDate, note:rec.note, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  number:{
+    table:"important_numbers", list:function(){return state.numbers;},
+    toRow:function(f){ return {name:f.name, category:f.category||"", phone:f.phone||"", note:f.note||"", for_whom:f.forWhom||"", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToNumber,
+    editFields:function(rec){ return {name:rec.name, category:rec.category, phone:rec.phone, note:rec.note, forWhom:rec.forWhom, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  },
+  reference:{
+    table:"person_references", list:function(){return state.references;},
+    toRow:function(f){ return {person:f.person, entity:f.entity||"", ref_type:f.refType||"", ref_value:f.refValue||"", note:f.note||"", category:f.category||"", added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToReference,
+    editFields:function(rec){ return {person:rec.person, entity:rec.entity, refType:rec.refType, refValue:rec.refValue, note:rec.note, category:rec.category, addedBy:rec.addedBy}; },
+    favoriteCol:false
+  },
+  note:{
+    table:"person_notes", list:function(){return state.notes;},
+    toRow:function(f){ return {person:f.person, text:f.text, added_by: f.addedBy!=null?f.addedBy:(getDisplayName()||"")}; },
+    fromRow:rowToNote,
+    editFields:function(rec){ return {person:rec.person, text:rec.text, addedBy:rec.addedBy}; },
+    favoriteCol:true
+  }
+};
+
+function addedByVal(f){ return f.addedBy!=null?f.addedBy:(getDisplayName()||""); }
+
+function saveEntity(entity, mode, id, fields){
+  var cfg=ENTITY_CONFIG[entity];
+  var row=cfg.toRow(fields);
+  if(mode==="edit" && id){
+    return sb.from(cfg.table).update(row).eq("id",id).select().single().then(function(res){
+      if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
+      var list=cfg.list();
+      var existing=list.find(function(x){return x.id===id;});
+      var mapped=cfg.fromRow(res.data);
+      if(existing) Object.assign(existing, mapped);
+      return mapped;
+    });
+  }
+  return sb.from(cfg.table).insert(row).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
+    var mapped=cfg.fromRow(res.data);
+    cfg.list().push(mapped);
+    return mapped;
+  });
+}
+function deleteEntity(entity, id){
+  var cfg=ENTITY_CONFIG[entity];
+  var list=cfg.list();
+  var idx=list.findIndex(function(x){return x.id===id;});
+  var removed = idx>=0 ? list[idx] : null;
+  return sb.from(cfg.table).delete().eq("id",id).then(function(res){
+    if(res.error){ showToast("تعذّر الحذف"); throw res.error; }
+    if(idx>=0) list.splice(idx,1);
+    return removed;
+  });
+}
+function toggleFavorite(entity, id){
+  var cfg=ENTITY_CONFIG[entity];
+  if(!cfg || !cfg.favoriteCol || !isAdmin) return;
+  var list=cfg.list();
+  var it=list.find(function(x){return x.id===id;});
+  if(!it) return;
+  var nv=!it.favorite;
+  it.favorite=nv;
+  renderApp();
+  sb.from(cfg.table).update({favorite:nv}).eq("id",id).then(function(res){
+    if(res.error){ it.favorite=!nv; renderApp(); showToast("تعذّر التحديث"); }
+  }, function(){ it.favorite=!nv; renderApp(); showToast("تعذّر التحديث"); });
+}
+function logActivity(text, entityType){
+  if(!isAdmin || !sb) return;
+  sb.from("activity_log").insert({actor:getDisplayName()||"المدير", action_text:text, entity_type:entityType}).select().single().then(function(res){
+    if(!res.error && res.data){
+      state.activity.unshift(rowToActivity(res.data));
+      state.activity=state.activity.slice(0,15);
+      if(route.page==="home") renderApp();
+    }
+  }, function(){});
+}
+function activityTextFor(entity, mode, f){
+  var who=addedByVal(f) || "المدير";
+  if(mode==="edit"){
+    var labelsE={item:"عنصرًا",request:"طلبًا",task:"مهمة",bill:"فاتورة/خدمة",subscription:"اشتراكًا",vehicle:"سيارة",number:"رقمًا",reference:"مرجعًا",note:"ملاحظة"};
+    return who+" "+verbFor(who,"حدّث","حدّثت")+" "+(labelsE[entity]||"عنصرًا");
+  }
+  if(entity==="item") return who+" "+verbFor(who,"أضاف","أضافت")+" "+(f.type||"عنصرًا")+(f.forWhom?(" لـ"+f.forWhom):"");
+  if(entity==="request") return who+" "+verbFor(who,"أضاف","أضافت")+" طلبًا"+(f.forWhom?(" لـ"+f.forWhom):"");
+  if(entity==="task") return who+" "+verbFor(who,"أضاف","أضافت")+" مهمة جديدة";
+  if(entity==="bill") return "تم إضافة فاتورة/خدمة جديدة: "+f.name;
+  if(entity==="subscription") return "تم إضافة اشتراك جديد: "+f.name;
+  if(entity==="vehicle") return "تمت إضافة سيارة: "+f.name;
+  if(entity==="number") return "تم إضافة رقم مهم: "+f.name;
+  if(entity==="reference") return "تم إضافة مرجع جديد لـ"+f.person;
+  if(entity==="note") return who+" "+verbFor(who,"أضاف","أضافت")+" ملاحظة لـ"+f.person;
+  return "تم التحديث";
+}
+
+/* ---------- global search (token-based, across all entities) ---------- */
+var SEARCH_STOPWORDS=["في","من","على","عن","الى","إلى","و","مع","او","أو"];
+function searchTokens(q){
+  return normalizeDigits(q).trim().split(/\s+/).filter(function(t){ return t && SEARCH_STOPWORDS.indexOf(t)===-1; });
+}
+function matchesTokens(haystack, tokens){
+  if(!tokens.length) return false;
+  return tokens.every(function(t){ return haystack.indexOf(t)>-1; });
+}
+function searchAll(query){
+  var tokens=searchTokens(query);
+  if(!tokens.length) return [];
+  var out=[];
+  state.items.forEach(function(it){
+    var hs=normalizeDigits([it.title,it.type,it.note,it.forWhom].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"item",label:it.title,sub:it.type+" · "+fmtHumanDate(it.date),href:it.forWhom?navHref("person",it.forWhom):navHref("section","calendar")});
+  });
+  state.requests.forEach(function(r){
+    var hs=normalizeDigits([r.text,r.note,r.forWhom,r.assignee,"طلب"].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"request",label:r.text,sub:"طلب · "+r.status,href:navHref("section","requests")});
+  });
+  state.tasks.forEach(function(t){
+    var hs=normalizeDigits([t.task,t.note,t.forWhom,t.assignee,"مهمة"].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"task",label:t.task,sub:"مهمة · "+t.status,href:navHref("section","tasks")});
+  });
+  state.bills.forEach(function(b){
+    var hs=normalizeDigits([b.name,b.type,b.provider,b.accountNumber,b.responsible,b.note].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"bill",label:b.name,sub:"فاتورة/خدمة"+(b.dueDate?(" · تستحق "+fmtHumanDate(b.dueDate)):""),href:navHref("section","bills")});
+  });
+  state.subscriptions.forEach(function(s){
+    var hs=normalizeDigits([s.name,s.owner,s.email,s.note,"اشتراك"].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"subscription",label:s.name,sub:"اشتراك · "+s.status,href:navHref("section","subscriptions")});
+  });
+  state.vehicles.forEach(function(v){
+    var hs=normalizeDigits([v.name,v.owner,v.plateNumber,v.maintenanceNote,v.note,"سيارة تأمين استمارة فحص"].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"vehicle",label:v.name,sub:"سيارة"+(v.owner?(" · "+v.owner):""),href:navHref("section","vehicles")});
+  });
+  state.numbers.forEach(function(n){
+    var hs=normalizeDigits([n.name,n.category,n.phone,n.note,n.forWhom].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"number",label:n.name,sub:"رقم مهم"+(n.category?(" · "+n.category):""),href:navHref("section","numbers")});
+  });
+  state.references.forEach(function(rf){
+    var hs=normalizeDigits([rf.person,rf.entity,rf.refType,rf.refValue,rf.note,rf.category].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"reference",label:(rf.refType?rf.refType+" — ":"")+rf.refValue,sub:"مرجع "+rf.person+(rf.entity?(" · "+rf.entity):""),href:navHref("person",rf.person)});
+  });
+  state.notes.forEach(function(nt){
+    var hs=normalizeDigits([nt.person,nt.text].join(" "));
+    if(matchesTokens(hs,tokens)) out.push({kind:"note",label:nt.text,sub:"ملاحظة "+nt.person,href:navHref("person",nt.person)});
+  });
+  PEOPLE.forEach(function(p){
+    var hs=normalizeDigits(p.name);
+    if(matchesTokens(hs,tokens)) out.push({kind:"person",label:p.name,sub:"فرد من العائلة",href:navHref("person",p.name)});
+  });
+  return out;
+}
+
+/* ---------- header / nav ---------- */
 function syncLabel(){
   if(dbStatus==="loading") return "جارٍ التحميل…";
   if(dbStatus==="error") return "تعذّر الاتصال بقاعدة البيانات";
   return "متصل بقاعدة بيانات العائلة";
 }
+function todayLabel(){
+  return WEEKDAYS_FULL[today.getDay()]+"، "+today.getDate()+" "+MONTHS[today.getMonth()]+" "+today.getFullYear();
+}
 function renderHeader(){
   var adminBtn = isAdmin
-    ? '<button type="button" class="admin-toggle on" data-action="admin-logout">'+icon("shield")+' المدير: '+escapeHtml(session.user.email)+' — خروج</button>'
+    ? '<button type="button" class="admin-toggle on" data-action="admin-logout">'+icon("shield")+' المدير: '+escapeHtml((session && session.user && session.user.email) || ADMIN_EMAIL)+' — خروج</button>'
     : '<button type="button" class="admin-toggle" data-action="admin-login-toggle">'+icon("shield")+' دخول المدير</button>';
   var badgeClass = dbStatus==="ok" ? "on" : (dbStatus==="error" ? "off" : "");
+  var backNav="";
+  if(route.page==="person" || route.page==="section"){
+    backNav='<div class="page-nav"><a class="back-link" href="#/">'+icon("home")+' الرئيسية</a></div>';
+  }
   return '<header class="topbar"><div class="topbar-inner shell">'+
-    '<div class="brand"><span class="brand-name wordmark">دارنا</span><span class="brand-sub">لوحة العائلة</span></div>'+
+    '<a class="brand-link" href="#/"><span class="brand-name wordmark">دارنا</span><span class="brand-sub">لوحة العائلة</span></a>'+
     '<div class="topbar-actions">'+
       adminBtn+
       '<div class="sync-badge '+badgeClass+'" id="syncBadge"><span class="sync-dot"></span><span class="sync-label">'+syncLabel()+'</span></div>'+
     '</div>'+
     '</div>'+
     '<div class="today-line shell">'+todayLabel()+'</div>'+
-    '</header>';
+    '</header>'+backNav;
 }
-function todayLabel(){
-  return WEEKDAYS_FULL[today.getDay()]+"، "+today.getDate()+" "+MONTHS[today.getMonth()]+" "+today.getFullYear();
-}
-function arDaysPhrase(n){
-  if(n<0) return "متأخر "+Math.abs(n)+" يوم";
-  if(n===0) return "اليوم";
-  if(n===1) return "غدًا";
-  if(n===2) return "بعد يومين";
-  if(n<=10) return "بعد "+n+" أيام";
-  return "بعد "+n+" يومًا";
-}
-function fmtRelativeLong(iso){
-  var diff=daysBetween(todayDate(), parseISO(iso));
-  if(diff>=2 && diff<=6) return WEEKDAYS_FULL[parseISO(iso).getDay()];
-  if(diff>20) return fmtHumanDate(iso);
-  return arDaysPhrase(diff);
-}
-
 function renderAdminLoginBanner(){
   return '<div class="identity-banner"><span>بريد المدير:</span><input type="email" id="adminEmailInput" placeholder="بريدك الإلكتروني" value="'+escapeHtml(ADMIN_EMAIL)+'">'+
     '<button type="button" class="btn btn-primary btn-sm" data-action="admin-login-send">إرسال رابط الدخول</button>'+
     '<button type="button" class="btn btn-ghost btn-sm" data-action="admin-login-cancel">إلغاء</button></div>';
 }
-
 function renderIdentityBanner(){
   if(getDisplayName()) return "";
   return '<div class="identity-banner"><span>قبل ما تضيف شي، وش اسمك؟</span><input type="text" id="identityInput" placeholder="اسمك"><button type="button" class="btn btn-primary btn-sm" data-action="save-identity">تم</button></div>';
 }
-
 function renderSearchBar(){
   return '<div class="searchbar-wrap"><div class="searchbar">'+icon("search")+
-    '<input type="text" id="searchInput" placeholder="ابحث أو اسأل عن أي شيء بالعائلة... مثال: تأمين" value="'+escapeHtml(searchQuery)+'">'+
+    '<input type="text" id="searchInput" placeholder="ابحث في دارنا... مثال: تأمين" value="'+escapeHtml(searchQuery)+'">'+
     '<button type="button" class="search-clear" id="searchClearBtn" data-action="clear-search" aria-label="مسح البحث" style="'+(searchQuery?"":"display:none;")+'">'+icon("close")+'</button>'+
     '</div></div><div id="searchResults"></div>';
 }
 function renderSearchResultsHtml(query){
   var q=query.trim();
   if(!q) return "";
-  var matches=[];
-  state.items.forEach(function(it){
-    if((it.title+" "+(it.note||"")).indexOf(q)>-1){ matches.push({kind:"item", data:it}); }
-  });
-  state.requests.forEach(function(r){
-    if((r.text+" "+(r.note||"")).indexOf(q)>-1){ matches.push({kind:"request", data:r}); }
-  });
+  var matches=searchAll(q);
   if(!matches.length){
     return '<div class="card"><div class="empty-note">ما فيه نتائج لـ"'+escapeHtml(q)+'"</div></div>';
   }
   var rows=matches.map(function(m){
-    if(m.kind==="item"){
-      var it=m.data;
-      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0"><div class="row-main"><div class="row-title">'+escapeHtml(it.title)+'</div><div class="row-sub">'+escapeHtml(it.type)+' · '+fmtHumanDate(it.date)+'</div></div></div>';
-    }
-    var r=m.data;
-    return '<div class="row"><div class="row-main"><div class="row-title">'+escapeHtml(r.text)+'</div><div class="row-sub">طلب · '+escapeHtml(r.status)+'</div></div></div>';
+    return '<a class="row" href="'+m.href+'" style="text-decoration:none;color:inherit;"><div class="row-main"><div class="row-title">'+escapeHtml(m.label)+'</div><div class="row-sub">'+escapeHtml(m.sub)+'</div></div></a>';
   }).join("");
   return '<div class="card"><div class="card-head"><h3 class="card-title">نتائج البحث</h3><span class="card-count">'+matches.length+'</span></div><div class="list">'+rows+'</div></div>';
 }
 function updateSearchUI(){
   var results=document.getElementById("searchResults");
-  var dash=document.getElementById("dashboardSections");
+  var dash=document.getElementById("pageContent");
   var clearBtn=document.getElementById("searchClearBtn");
   if(results) results.innerHTML=renderSearchResultsHtml(searchQuery);
   if(dash) dash.style.display=searchQuery.trim()?"none":"";
   if(clearBtn) clearBtn.style.display=searchQuery?"":"none";
 }
 
-function renderQuickAdd(){
-  return '<div class="quickadd-wrap"><div class="quickadd-card">'+
-    '<p class="quickadd-label">وش تبي تضيف للعائلة؟</p>'+
-    '<form id="quickaddForm" class="quickadd-row">'+
-      '<input id="quickaddInput" type="text" autocomplete="off" placeholder="مثال: علاج الوالد ينتهي 15 سبتمبر — أو: ناصر جيب عشاء">'+
-      '<button type="submit" class="btn btn-primary">إضافة</button>'+
-    '</form>'+
-    '<p class="quickadd-hint">يُضاف مباشرة للوحة العائلة (متاح للمدير).</p>'+
-    '</div></div>';
+/* ---------- people strip + shortcuts (home) ---------- */
+function moodForPerson(person){
+  var todayIso=toISO(today);
+  return state.moods.find(function(m){ return m.person===person && m.moodDate===todayIso; });
 }
-
-function renderFamilyBox(){
-  return '<div class="familybox-wrap"><div class="card card--familybox">'+
-    '<h3 class="card-title">'+icon("mail")+' صندوق العائلة</h3>'+
-    '<p class="familybox-hint">أي أحد بالعائلة يقدر يرسل اقتراح من هنا بدون تسجيل دخول، وتتم مراجعته قبل ما يظهر باللوحة.</p>'+
-    '<form id="familyboxForm" class="familybox-form">'+
-      '<input type="text" id="familyboxName" placeholder="اسمك" value="'+escapeHtml(getDisplayName())+'" required>'+
-      '<input type="text" id="familyboxText" placeholder="مثال: زواج خالد يوم 18 ديسمبر" required>'+
-      '<button type="submit" class="btn btn-primary">إرسال</button>'+
-    '</form>'+
-  '</div></div>';
-}
-
-function renderConfirmPanel(){
-  var el=document.getElementById("confirmPanel");
-  if(!el) return;
-  if(!confirmState){ el.classList.add("hidden"); el.innerHTML=""; return; }
-  el.classList.remove("hidden");
-  var types=["طلب","مناسبة","موعد","تذكير","تجديد","عيد ميلاد","مناسبة وطنية","سفر"];
-  var chips=types.map(function(t){
-    return '<button type="button" class="type-chip'+(confirmState.type===t?" active":"")+'" data-action="confirm-type" data-type="'+t+'">'+t+'</button>';
+function renderPeopleStrip(){
+  var cards=PEOPLE.map(function(p){
+    var mood=moodForPerson(p.name);
+    return '<a class="person-card" href="'+navHref("person",p.name)+'">'+
+      '<span class="person-avatar tint-'+p.tint+'">'+p.emoji+'</span>'+
+      '<span class="person-name">'+escapeHtml(p.name)+'</span>'+
+      (mood?'<span class="person-mood-em">'+moodEmoji(mood.mood)+'</span>':'')+
+    '</a>';
   }).join("");
-  var imps=["عادي","مهم","عاجل"];
-  var impChips=imps.map(function(im){
-    return '<button type="button" class="type-chip small'+(confirmState.importance===im?" active":"")+'" data-action="confirm-importance" data-imp="'+im+'">'+im+'</button>';
+  return '<div class="people-strip-wrap"><div class="people-strip">'+cards+'</div></div>';
+}
+function renderShortcuts(){
+  var cards=SECTIONS.map(function(s){
+    return '<a class="shortcut-card" href="'+navHref("section",s.key)+'">'+icon(s.icon)+'<span>'+escapeHtml(s.label)+'</span></a>';
   }).join("");
-  var isRequest=confirmState.type==="طلب";
-  var dateField=isRequest?"":(
-    '<div class="field"><label for="confirmDate">التاريخ</label><input type="date" id="confirmDate" value="'+(confirmState.date||toISO(today))+'"></div>'
-  );
-  var forWhomField=isRequest?(
-    '<div class="field"><label for="confirmForWhom">على مين؟ (اختياري)</label><input type="text" id="confirmForWhom" value="'+escapeHtml(confirmState.forWhom||"")+'" placeholder="مثال: ناصر"></div>'
-  ):"";
-  var senderNote = confirmState.mode==="approve-submission" ? '<p class="confirm-sender">من صندوق العائلة — أرسلها: '+escapeHtml(confirmState.senderName||"")+'</p>' : "";
-  var panelTitle = confirmState.mode==="approve-submission" ? "مراجعة الاقتراح قبل الاعتماد" : "تأكيد الإضافة";
-  var saveLabel = confirmState.mode==="approve-submission" ? "اعتماد" : "حفظ";
-  var actionBtn="";
-  if(confirmState.mode==="edit"){
-    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="confirm-delete">'+icon("trash")+' حذف</button>';
-  }else if(confirmState.mode==="approve-submission"){
-    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="confirm-reject-submission">'+icon("close")+' رفض</button>';
-  }
-  el.innerHTML='<div class="confirm-card">'+
-    '<p class="confirm-title">'+panelTitle+'</p>'+
-    senderNote+
-    '<div class="type-chips">'+chips+'</div>'+
-    '<div class="confirm-fields">'+
-      '<div class="field"><label for="confirmTitle">'+(isRequest?"الطلب":"العنوان")+'</label><input type="text" id="confirmTitle" value="'+escapeHtml(confirmState.title)+'"></div>'+
-      dateField+
-      forWhomField+
-    '</div>'+
-    '<p class="confirm-subtitle">درجة الأهمية</p>'+
-    '<div class="type-chips">'+impChips+'</div>'+
-    '<div class="confirm-fields">'+
-      '<div class="field"><label for="confirmNote">ملاحظة (اختياري)</label><input type="text" id="confirmNote" value="'+escapeHtml(confirmState.note||"")+'" placeholder="ملاحظة قصيرة..."></div>'+
-    '</div>'+
-    '<div class="confirm-actions">'+
-      actionBtn+
-      '<button type="button" class="btn btn-ghost btn-sm" data-action="confirm-cancel">إلغاء</button>'+
-      '<button type="button" class="btn btn-primary btn-sm" data-action="confirm-save">'+saveLabel+'</button>'+
-    '</div>'+
-  '</div>';
-  var ti=document.getElementById("confirmTitle");
-  if(ti && confirmState.focusTitle){ setTimeout(function(){ ti.focus(); ti.select&&ti.select(); },10); }
+  return '<div class="shortcuts-wrap"><div class="shortcuts-grid">'+cards+'</div></div>';
 }
 
+/* ---------- home: compact result cards ---------- */
 function upcomingItems(limit){
   var t=todayDate();
   return state.items.filter(function(it){ return daysBetween(t, parseISO(it.date))>=0; })
     .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; })
     .slice(0,limit||7);
 }
-
 function chipKind(it){
   if(it.type==="تذكير"){
     var tier=urgencyTier(it.date);
@@ -671,40 +978,33 @@ function chipKind(it){
   }
   return typeMeta(it.type).kind;
 }
-function dotColorVar(kind){
-  if(kind==="urgent") return "urgent";
-  if(kind==="warn") return "gold";
-  if(kind==="appt") return "sky";
-  if(kind==="birthday") return "lavender-ink";
-  if(kind==="national") return "blue-ink";
-  return "green-600";
+function favIconBtn(entity, id, isFav){
+  if(!isAdmin || !ENTITY_CONFIG[entity].favoriteCol) return "";
+  return '<button type="button" class="star-btn'+(isFav?" on":"")+'" data-action="toggle-favorite" data-entity="'+entity+'" data-id="'+id+'" aria-label="مفضلة">'+icon(isFav?"starFilled":"star")+'</button>';
 }
-
-/* القادم — the most prominent card, always at the very top of the dashboard */
 function renderUpcomingCard(){
   var items=upcomingItems(7);
   var body;
   if(!items.length){
-    body='<div class="empty-note">ما فيه شيء قادم حاليًا — أضف مناسبة أو تذكير من الأعلى.</div>';
+    body='<div class="empty-note">ما فيه شيء قادم حاليًا.</div>';
   }else{
     body='<div class="list">'+items.map(function(it){
       var meta=typeMeta(it.type);
       var badge=importanceBadge(it.importance);
       var pillKind=chipKind(it);
       var pillClass=(pillKind==="urgent")?"urgent":(pillKind==="warn")?"warn":"ok";
-      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0">'+
+      return '<div class="row" data-action="edit-item" data-id="'+it.id+'" role="button" tabindex="0">'+
         '<div class="row-main">'+
           '<div class="row-title">'+icon(meta.icon)+' '+escapeHtml(it.title)+'</div>'+
-          (badge?'<div class="row-badges">'+badge+'</div>':'')+
+          (badge||it.forWhom?'<div class="row-badges">'+badge+(it.forWhom?'<span class="pill muted">'+escapeHtml(it.forWhom)+'</span>':'')+'</div>':'')+
           '<div class="row-sub">'+escapeHtml(it.type)+' · '+fmtHumanDate(it.date)+'</div>'+
         '</div>'+
         '<span class="pill '+pillClass+'">'+escapeHtml(fmtRelativeLong(it.date))+'</span>'+
       '</div>';
     }).join("")+'</div>';
   }
-  return '<div class="upcoming-wrap"><div class="card card--upcoming"><div class="card-head"><h3 class="card-title">'+icon("calendar")+' القادم</h3><span class="card-count">'+items.length+'</span></div>'+body+'</div></div>';
+  return '<div class="card card--reminders hgrid-span2"><div class="card-head"><h3 class="card-title">'+icon("calendar")+' القادم</h3><span class="card-count">'+items.length+'</span></div>'+body+'</div>';
 }
-
 function thisWeekStats(){
   var t=todayDate();
   var end=new Date(t); end.setDate(end.getDate()+6);
@@ -716,16 +1016,47 @@ function thisWeekStats(){
   var needsAction=urgentNowList().length;
   return {occasions:occasions, appts:appts, requests:openRequests, needsAction:needsAction};
 }
+function billsDueSoon(days){
+  var t=todayDate();
+  return state.bills.filter(function(b){ return b.dueDate && daysBetween(t,parseISO(b.dueDate))>=-3 && daysBetween(t,parseISO(b.dueDate))<=(days||14); })
+    .sort(function(a,b){ return a.dueDate<b.dueDate?-1:1; });
+}
+function vehicleDatesSoon(days){
+  var t=todayDate();
+  var out=[];
+  state.vehicles.forEach(function(v){
+    [["insuranceDate","تأمين"],["registrationDate","استمارة"],["inspectionDate","فحص دوري"]].forEach(function(pair){
+      var d=v[pair[0]];
+      if(d && daysBetween(t,parseISO(d))>=-3 && daysBetween(t,parseISO(d))<=(days||30)){
+        out.push({vehicle:v, label:pair[1], date:d});
+      }
+    });
+  });
+  return out.sort(function(a,b){ return a.date<b.date?-1:1; });
+}
 function urgentNowList(){
   var remUrgent=state.items.filter(function(it){ return it.type==="تذكير" && urgencyTier(it.date)==="urgent"; });
   var flaggedItems=state.items.filter(function(it){ return it.importance==="عاجل" && it.type!=="تذكير"; });
   var flaggedReq=state.requests.filter(function(r){ return r.importance==="عاجل" && r.status!=="تم"; });
-  return remUrgent.concat(flaggedItems).concat(flaggedReq).slice(0,5);
+  var flaggedTasks=state.tasks.filter(function(t){ return t.importance==="عاجل" && t.status!=="مكتمل"; });
+  var soonBills=billsDueSoon(3);
+  var soonVehicles=vehicleDatesSoon(7);
+  var out=[];
+  remUrgent.forEach(function(x){ out.push({kind:"item",data:x}); });
+  flaggedItems.forEach(function(x){ out.push({kind:"item",data:x}); });
+  flaggedReq.forEach(function(x){ out.push({kind:"request",data:x}); });
+  flaggedTasks.forEach(function(x){ out.push({kind:"task",data:x}); });
+  soonBills.forEach(function(x){ out.push({kind:"bill",data:x}); });
+  soonVehicles.forEach(function(x){ out.push({kind:"vehicle",data:x}); });
+  return out.slice(0,6);
 }
 function urgentRowLabel(x){
-  if(x.text!==undefined){ return "طلب عاجل: "+x.text; }
-  var diff=daysBetween(todayDate(), parseISO(x.date));
-  return x.title+" — "+arDaysPhrase(diff);
+  if(x.kind==="request") return "طلب عاجل: "+x.data.text;
+  if(x.kind==="task") return "مهمة عاجلة: "+x.data.task;
+  if(x.kind==="bill") return "فاتورة قريبة الاستحقاق: "+x.data.name+" — "+arDaysPhrase(daysBetween(todayDate(),parseISO(x.data.dueDate)));
+  if(x.kind==="vehicle") return x.data.vehicle.name+" — "+x.data.label+" "+arDaysPhrase(daysBetween(todayDate(),parseISO(x.data.date)));
+  var diff=daysBetween(todayDate(), parseISO(x.data.date));
+  return x.data.title+" — "+arDaysPhrase(diff);
 }
 function renderStatsRow(){
   var stats=thisWeekStats();
@@ -735,12 +1066,71 @@ function renderStatsRow(){
         return '<div class="row-mini">'+escapeHtml(urgentRowLabel(x))+'</div>';
       }).join("")+'</div>'
     : '<div class="empty-note">ولا شي عاجل حاليًا.</div>';
-  return '<div class="stats-row">'+
+  return '<div class="hgrid-span2 stats-row">'+
     '<div class="card card--urgent stat-tile"><h4 class="stat-title">الأمور العاجلة</h4>'+urgentBody+'</div>'+
     '<div class="card card--thisweek stat-tile"><h4 class="stat-title">هذا الأسبوع</h4><p class="stat-line">'+stats.occasions+' مناسبات · '+stats.appts+' مواعيد · '+stats.requests+' طلبات مفتوحة · '+stats.needsAction+' يحتاج إجراء</p></div>'+
   '</div>';
 }
-
+function miniListCard(opts){
+  /* opts: {icon,title,cardClass,items,rowFn,emptyText,seeAllHref} */
+  var body = opts.items.length
+    ? '<div class="list compact">'+opts.items.map(opts.rowFn).join("")+'</div>'
+    : '<div class="empty-note">'+opts.emptyText+'</div>';
+  return '<div class="card'+(opts.cardClass?(" "+opts.cardClass):"")+'"><div class="card-head"><h3 class="card-title">'+icon(opts.icon)+' '+opts.title+'</h3>'+
+    '<a class="see-all" href="'+opts.seeAllHref+'">عرض الكل</a></div>'+body+'</div>';
+}
+function renderRequestsMini(){
+  var open=state.requests.filter(function(r){return r.status!=="تم";}).slice(0,5);
+  return miniListCard({icon:"list", title:"الطلبات المفتوحة", cardClass:"card--requests", items:open, seeAllHref:navHref("section","requests"), emptyText:"لا توجد طلبات مفتوحة.",
+    rowFn:function(r){ return '<div class="row-mini">'+(r.forWhom?'<b>'+escapeHtml(r.forWhom)+'</b> — ':'')+escapeHtml(r.text)+'</div>'; }});
+}
+function renderTasksMini(){
+  var open=state.tasks.filter(function(t){return t.status!=="مكتمل";})
+    .sort(function(a,b){ return (a.date||"9999")<(b.date||"9999")?-1:1; }).slice(0,5);
+  return miniListCard({icon:"tag", title:"المهام", cardClass:"card--tasks", items:open, seeAllHref:navHref("section","tasks"), emptyText:"لا توجد مهام حالياً.",
+    rowFn:function(t){ return '<div class="row-mini">'+escapeHtml(t.task)+(t.date?(' — '+fmtHumanDate(t.date)):'')+'</div>'; }});
+}
+function renderRemindersMini(){
+  var rem=state.items.filter(function(it){return it.type==="تذكير";}).sort(function(a,b){return a.date<b.date?-1:1;}).slice(0,5);
+  return miniListCard({icon:"bell", title:"التذكيرات", cardClass:"", items:rem, seeAllHref:navHref("section","calendar"), emptyText:"لا توجد تذكيرات حالياً.",
+    rowFn:function(it){ return '<div class="row-mini">'+escapeHtml(it.title)+' — '+fmtRelative(it.date)+'</div>'; }});
+}
+function renderBillsMini(){
+  var soon=billsDueSoon(14);
+  return miniListCard({icon:"receipt", title:"الفواتير القريبة", cardClass:"card--bills", items:soon, seeAllHref:navHref("section","bills"), emptyText:"لا توجد فواتير قريبة الاستحقاق.",
+    rowFn:function(b){ return '<div class="row-mini">'+escapeHtml(b.name)+' — '+fmtRelative(b.dueDate)+'</div>'; }});
+}
+function renderMoodCard(){
+  var chips=PEOPLE.map(function(p){
+    var m=moodForPerson(p.name);
+    return '<a class="mood-chip'+(m?"":" unset")+'" href="'+navHref("person",p.name)+'"><span class="em">'+(m?moodEmoji(m.mood):"—")+'</span><span>'+escapeHtml(p.name)+'</span></a>';
+  }).join("");
+  return '<div class="card"><div class="card-head"><h3 class="card-title">'+icon("smile")+' كيف العائلة اليوم؟</h3></div><div class="mood-row">'+chips+'</div></div>';
+}
+function favoritesAll(){
+  var out=[];
+  state.items.forEach(function(x){ if(x.favorite) out.push({label:x.title,href:x.forWhom?navHref("person",x.forWhom):navHref("section","calendar")}); });
+  state.bills.forEach(function(x){ if(x.favorite) out.push({label:x.name,href:navHref("section","bills")}); });
+  state.subscriptions.forEach(function(x){ if(x.favorite) out.push({label:x.name,href:navHref("section","subscriptions")}); });
+  state.vehicles.forEach(function(x){ if(x.favorite) out.push({label:x.name,href:navHref("section","vehicles")}); });
+  state.numbers.forEach(function(x){ if(x.favorite) out.push({label:x.name,href:navHref("section","numbers")}); });
+  state.notes.forEach(function(x){ if(x.favorite) out.push({label:x.text,href:navHref("person",x.person)}); });
+  return out;
+}
+function renderFavoritesCard(){
+  var favs=favoritesAll();
+  var body = favs.length
+    ? '<div class="fav-row">'+favs.map(function(f){ return '<a class="fav-chip" href="'+f.href+'">'+icon("starFilled")+' '+escapeHtml(f.label)+'</a>'; }).join("")+'</div>'
+    : '<div class="empty-note">ما فيه عناصر مفضلة بعد — ثبّت أي رقم أو فاتورة أو سيارة بالنجمة ⭐.</div>';
+  return '<div class="card"><div class="card-head"><h3 class="card-title">'+icon("starFilled")+' المفضلة</h3></div>'+body+'</div>';
+}
+function renderActivityCard(){
+  var items=state.activity.slice(0,10);
+  var body = items.length
+    ? '<div class="activity-list">'+items.map(function(a){ return '<div class="activity-row">'+escapeHtml(a.actionText)+'<span class="activity-time">'+fmtAddedAt(a.createdAt)+'</span></div>'; }).join("")+'</div>'
+    : '<div class="empty-note">لا توجد تحديثات بعد.</div>';
+  return '<div class="card"><div class="card-head"><h3 class="card-title">'+icon("clock")+' آخر التحديثات</h3></div>'+body+'</div>';
+}
 function renderPendingCard(){
   if(!isAdmin) return "";
   var pend=state.submissions.filter(function(s){ return s.status==="pending"; })
@@ -768,7 +1158,277 @@ function renderPendingCard(){
   }
   return '<div class="pending-wrap"><div class="card card--pending"><div class="card-head"><h3 class="card-title">'+icon("bell")+' بانتظار الاعتماد</h3><span class="card-count">'+pend.length+'</span></div>'+body+'</div></div>';
 }
+function renderHomePage(){
+  return renderPeopleStrip()+
+    renderShortcuts()+
+    (isAdmin ? renderPendingCard() : "")+
+    '<div class="home-grid">'+
+      renderUpcomingCard()+
+      renderStatsRow()+
+      renderRequestsMini()+
+      renderTasksMini()+
+      renderRemindersMini()+
+      renderBillsMini()+
+      renderMoodCard()+
+      renderFavoritesCard()+
+      renderActivityCard()+
+    '</div>';
+}
 
+/* ---------- entity form: generic add/edit panel ---------- */
+function defaultFieldsFor(entity){
+  var d={
+    item:{type:"مناسبة",title:"",date:toISO(today),note:"",importance:"عادي",forWhom:""},
+    request:{title:"",forWhom:"",assignee:"",date:"",note:"",importance:"عادي",status:"جديد"},
+    task:{task:"",assignee:"",forWhom:"",date:"",importance:"عادي",note:"",status:"جديد"},
+    bill:{name:"",type:"",accountNumber:"",provider:"",dueDate:"",responsible:"",note:""},
+    subscription:{name:"",owner:"",email:"",renewalDate:"",note:"",status:"نشط"},
+    vehicle:{name:"",owner:"",plateNumber:"",insuranceDate:"",registrationDate:"",inspectionDate:"",maintenanceNote:"",oilChangeDate:"",note:""},
+    number:{name:"",category:"",phone:"",note:"",forWhom:""},
+    reference:{person:"",entity:"",refType:"",refValue:"",note:"",category:""},
+    note:{person:"",text:""}
+  };
+  return d[entity]||{};
+}
+function openForm(entity, presetFields, mode, id, presetPerson){
+  if(!isAdmin){ showToast("سجّل دخول كمدير أول"); return; }
+  entityForm={entity:entity, mode:mode||"add", id:id||null, presetPerson:presetPerson||null, fields:Object.assign(defaultFieldsFor(entity), presetFields||{})};
+  renderFormPanel();
+  scrollToForm();
+}
+function openEditGeneric(entity, id){
+  var cfg=ENTITY_CONFIG[entity];
+  var rec=cfg.list().find(function(x){return x.id===id;});
+  if(!rec) return;
+  openForm(entity, cfg.editFields(rec), "edit", id, null);
+}
+function closeForm(){ entityForm=null; renderFormPanel(); }
+function scrollToForm(){
+  setTimeout(function(){ var el=document.getElementById("entityFormHost"); if(el) el.scrollIntoView({behavior:"smooth", block:"center"}); },10);
+}
+function field(id,label,type,value,extra){
+  return '<div class="field"><label for="'+id+'">'+label+'</label><input type="'+type+'" id="'+id+'" value="'+escapeHtml(value||"")+'" '+(extra||"")+'></div>';
+}
+function fieldWithList(id,label,value,listId,options){
+  var opts=options.map(function(o){return '<option value="'+escapeHtml(o)+'">';}).join("");
+  return '<div class="field"><label for="'+id+'">'+label+'</label><input type="text" id="'+id+'" list="'+listId+'" value="'+escapeHtml(value||"")+'"><datalist id="'+listId+'">'+opts+'</datalist></div>';
+}
+function fieldSelect(id,label,options,current,disabled){
+  var opts=options.map(function(o){
+    var val=typeof o==="string"?o:o.value, lab=typeof o==="string"?o:o.label;
+    return '<option value="'+escapeHtml(val)+'"'+(current===val?" selected":"")+'>'+escapeHtml(lab)+'</option>';
+  }).join("");
+  return '<div class="field"><label for="'+id+'">'+label+'</label><select id="'+id+'" '+(disabled?"disabled":"")+'>'+opts+'</select></div>';
+}
+function fieldTextarea(id,label,value){
+  return '<div class="field" style="flex-basis:100%;"><label for="'+id+'">'+label+'</label><textarea id="'+id+'">'+escapeHtml(value||"")+'</textarea></div>';
+}
+var FOR_WHOM_OPTIONS=[{value:"",label:"بدون تحديد"}].concat(PEOPLE.map(function(p){return {value:p.name,label:p.name};})).concat([{value:"الجميع",label:"الجميع"}]);
+var PERSON_ONLY_OPTIONS=PEOPLE.map(function(p){return {value:p.name,label:p.name};});
+function chipsRow(fieldName, options, current, small){
+  return '<div class="type-chips">'+options.map(function(o){
+    return '<button type="button" class="type-chip'+(small?" small":"")+(current===o?" active":"")+'" data-action="ef-chip" data-field="'+fieldName+'" data-value="'+o+'">'+o+'</button>';
+  }).join("")+'</div>';
+}
+function entityFieldsHtml(ef){
+  var f=ef.fields;
+  var locked = !!ef.presetPerson;
+  switch(ef.entity){
+    case "item":
+      return chipsRow("type", ITEM_TYPES, f.type)+
+        '<div class="field-grid">'+field("ef-title","العنوان","text",f.title)+field("ef-date","التاريخ","date",f.date||toISO(today))+
+          fieldSelect("ef-forWhom","يخص مين؟",FOR_WHOM_OPTIONS,f.forWhom||"",locked)+'</div>'+
+        '<p class="confirm-subtitle">درجة الأهمية</p>'+chipsRow("importance",IMPORTANCE_OPTS,f.importance||"عادي",true)+
+        '<div class="field-grid">'+field("ef-note","ملاحظة (اختياري)","text",f.note)+'</div>';
+    case "request":
+      return '<div class="field-grid">'+field("ef-title","الطلب","text",f.title)+
+          fieldSelect("ef-forWhom","يخص مين؟",FOR_WHOM_OPTIONS,f.forWhom||"",locked)+
+          field("ef-assignee","على مين التنفيذ؟","text",f.assignee)+field("ef-date","التاريخ (اختياري)","date",f.date)+'</div>'+
+        '<p class="confirm-subtitle">الأولوية</p>'+chipsRow("importance",IMPORTANCE_OPTS,f.importance||"عادي",true)+
+        '<p class="confirm-subtitle">الحالة</p>'+chipsRow("status",REQUEST_STATUS,f.status||"جديد",true)+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "task":
+      return '<div class="field-grid">'+field("ef-task","المهمة","text",f.task)+field("ef-assignee","المسؤول","text",f.assignee)+
+          fieldSelect("ef-forWhom","يخص مين؟",FOR_WHOM_OPTIONS,f.forWhom||"",locked)+field("ef-date","التاريخ","date",f.date)+'</div>'+
+        '<p class="confirm-subtitle">الأولوية</p>'+chipsRow("importance",IMPORTANCE_OPTS,f.importance||"عادي",true)+
+        '<p class="confirm-subtitle">الحالة</p>'+chipsRow("status",TASK_STATUS,f.status||"جديد",true)+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "bill":
+      return '<div class="field-grid">'+field("ef-name","اسم الفاتورة أو الخدمة","text",f.name)+
+          fieldWithList("ef-type","النوع",f.type,"billTypeList",BILL_TYPES)+
+          field("ef-accountNumber","رقم الحساب / المرجعي","text",f.accountNumber)+
+          field("ef-provider","الجهة","text",f.provider)+
+          field("ef-dueDate","تاريخ الاستحقاق / التجديد","date",f.dueDate)+
+          field("ef-responsible","المسؤول","text",f.responsible)+'</div>'+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "subscription":
+      return '<div class="field-grid">'+field("ef-name","اسم الاشتراك","text",f.name)+
+          field("ef-owner","باسم من؟","text",f.owner)+
+          field("ef-email","البريد المرتبط","email",f.email)+
+          field("ef-renewalDate","تاريخ التجديد","date",f.renewalDate)+'</div>'+
+        '<p class="confirm-subtitle">الحالة</p>'+chipsRow("status",SUBSCRIPTION_STATUS,f.status||"نشط",true)+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "vehicle":
+      return '<div class="field-grid">'+field("ef-name","اسم السيارة","text",f.name)+field("ef-owner","صاحبها","text",f.owner)+
+          field("ef-plateNumber","رقم اللوحة","text",f.plateNumber)+'</div>'+
+        '<div class="field-grid">'+field("ef-insuranceDate","التأمين","date",f.insuranceDate)+
+          field("ef-registrationDate","الاستمارة","date",f.registrationDate)+
+          field("ef-inspectionDate","الفحص الدوري","date",f.inspectionDate)+
+          field("ef-oilChangeDate","الزيت (آخر تغيير)","date",f.oilChangeDate)+'</div>'+
+        '<div class="field-grid">'+field("ef-maintenanceNote","الصيانة","text",f.maintenanceNote)+field("ef-note","ملاحظات","text",f.note)+'</div>';
+    case "number":
+      return '<div class="field-grid">'+field("ef-name","الاسم","text",f.name)+
+          fieldWithList("ef-category","التصنيف",f.category,"numberCatList",NUMBER_CATEGORIES)+
+          field("ef-phone","رقم الجوال / الهاتف","tel",f.phone)+
+          fieldSelect("ef-forWhom","يخص مين؟ (إن لزم)",FOR_WHOM_OPTIONS,f.forWhom||"",false)+'</div>'+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "reference":
+      return '<div class="field-grid">'+fieldSelect("ef-person","الشخص",PERSON_ONLY_OPTIONS,f.person||(ef.presetPerson||""),locked)+
+          field("ef-entity","الجهة","text",f.entity,'placeholder="مثال: مستشفى الحبيب"')+
+          field("ef-refType","نوع المعلومة","text",f.refType,'placeholder="مثال: رقم ملف"')+'</div>'+
+        '<div class="field-grid">'+field("ef-refValue","الرقم أو المرجع","text",f.refValue)+
+          field("ef-category","تصنيف اختياري","text",f.category)+'</div>'+
+        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+    case "note":
+      return '<div class="field-grid">'+fieldSelect("ef-person","الشخص",PERSON_ONLY_OPTIONS,f.person||(ef.presetPerson||""),locked)+'</div>'+
+        '<div class="field-grid">'+fieldTextarea("ef-text","الملاحظة",f.text)+'</div>';
+    default: return "";
+  }
+}
+var ENTITY_TITLES={item:"عنصر",request:"طلب",task:"مهمة",bill:"فاتورة / خدمة",subscription:"اشتراك",vehicle:"سيارة",number:"رقم مهم",reference:"معلومة / مرجع",note:"ملاحظة"};
+function renderFormPanel(){
+  var el=document.getElementById("entityFormHost");
+  if(!el) return;
+  if(!entityForm){ el.classList.add("hidden"); el.innerHTML=""; return; }
+  el.classList.remove("hidden");
+  var isApprove=entityForm.mode==="approve-submission";
+  var title = isApprove ? "مراجعة الاقتراح قبل الاعتماد" : (entityForm.mode==="edit" ? ("تعديل "+(ENTITY_TITLES[entityForm.entity]||"")) : ("إضافة "+(ENTITY_TITLES[entityForm.entity]||"")));
+  var saveLabel = isApprove ? "اعتماد" : "حفظ";
+  var senderNote = isApprove ? '<p class="confirm-sender">من صندوق العائلة — أرسلها: '+escapeHtml(entityForm.fields.senderName||"")+'</p>' : "";
+  var actionBtn="";
+  if(entityForm.mode==="edit"){
+    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="entity-delete">'+icon("trash")+' حذف</button>';
+  }else if(isApprove){
+    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="confirm-reject-submission" data-id="'+entityForm.id+'">'+icon("close")+' رفض</button>';
+  }
+  el.innerHTML='<div class="entity-form-card"><form id="entityFormEl">'+
+    '<p class="confirm-title">'+title+'</p>'+
+    senderNote+
+    entityFieldsHtml(entityForm)+
+    '<div class="confirm-actions">'+
+      actionBtn+
+      '<button type="button" class="btn btn-ghost btn-sm" data-action="entity-cancel">إلغاء</button>'+
+      '<button type="submit" class="btn btn-primary btn-sm">'+saveLabel+'</button>'+
+    '</div>'+
+  '</form></div>';
+}
+var FORM_TEXT_FIELDS={
+  item:["title","date","note","forWhom"], request:["title","forWhom","assignee","date","note"],
+  task:["task","assignee","forWhom","date","note"], bill:["name","type","accountNumber","provider","dueDate","responsible","note"],
+  subscription:["name","owner","email","renewalDate","note"],
+  vehicle:["name","owner","plateNumber","insuranceDate","registrationDate","inspectionDate","maintenanceNote","oilChangeDate","note"],
+  number:["name","category","phone","note","forWhom"], reference:["person","entity","refType","refValue","note","category"],
+  note:["person","text"]
+};
+var PRIMARY_FIELD={item:"title",request:"title",task:"task",bill:"name",subscription:"name",vehicle:"name",number:"name",reference:"refValue",note:"text"};
+function collectFormInputs(entity, f){
+  var keys=FORM_TEXT_FIELDS[entity]||[];
+  keys.forEach(function(k){
+    var el=document.getElementById("ef-"+k);
+    if(el) f[k]=el.value.trim();
+  });
+}
+function saveForm(){
+  if(!entityForm) return;
+  var f=entityForm.fields;
+  collectFormInputs(entityForm.entity, f);
+  var primary=PRIMARY_FIELD[entityForm.entity];
+  if(!f[primary] || !String(f[primary]).trim()){ showToast("عبّي الحقل الأساسي قبل الحفظ"); return; }
+  if((entityForm.entity==="reference" || entityForm.entity==="note") && !f.person){ showToast("اختر الشخص"); return; }
+  if(entityForm.mode==="approve-submission"){
+    var targetEntity = f.type==="طلب" ? "request" : "item";
+    approveSubmission(entityForm.id, targetEntity==="request"?"طلب":(f.type||"مناسبة"), f.title, f.date, f.importance||"عادي", f.note).then(function(){
+      closeForm(); renderApp(); showToast("تم الاعتماد، وأضيفت للوحة");
+    }, function(){});
+    return;
+  }
+  var mode=entityForm.mode, id=entityForm.id, entity=entityForm.entity;
+  saveEntity(entity, mode, id, f).then(function(){
+    closeForm();
+    renderApp();
+    showToast(mode==="edit" ? "تم التحديث" : "تمت الإضافة");
+    logActivity(activityTextFor(entity, mode, f), entity);
+  }, function(){});
+}
+function deleteFormTarget(){
+  if(!entityForm || entityForm.mode!=="edit") return;
+  var entity=entityForm.entity, id=entityForm.id;
+  deleteEntity(entity, id).then(function(removed){
+    closeForm(); renderApp();
+    if(removed) showToast("تم الحذف");
+  }, function(){});
+}
+
+/* ---------- family submissions (صندوق العائلة) ---------- */
+function addSubmission(senderName,text,suggestedType,suggestedDate){
+  var row={sender_name:senderName, text:text, suggested_type:suggestedType||null, suggested_date:suggestedDate||null, status:"pending", source:"dashboard"};
+  return sb.from("family_submissions").insert(row).then(function(res){
+    if(res.error){ showToast("تعذّر إرسال اقتراحك، حاول مرة ثانية"); throw res.error; }
+  });
+}
+function approveSubmission(id,type,title,date,importance,note){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  var senderName = s ? s.senderName : "";
+  var addPromise = (type==="طلب")
+    ? saveEntity("request","add",null,{title:title,importance:importance,note:note,addedBy:senderName})
+    : saveEntity("item","add",null,{type:type,title:title,date:date||toISO(today),importance:importance,note:note,addedBy:senderName});
+  return addPromise.then(function(){
+    return sb.from("family_submissions").update({status:"approved"}).eq("id",id);
+  }).then(function(res){
+    if(res && res.error){ showToast("تمت الإضافة لكن تعذّر تحديث حالة الاقتراح"); }
+    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
+  });
+}
+function rejectSubmission(id){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  return sb.from("family_submissions").update({status:"rejected"}).eq("id",id).then(function(res){
+    if(res.error){ showToast("تعذّر الرفض"); throw res.error; }
+    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
+    return s;
+  });
+}
+function openConfirmForApproveSubmission(id){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  if(!s) return;
+  entityForm={entity:(s.suggestedType==="طلب"?"request":"item"), mode:"approve-submission", id:id,
+    fields:{title:s.text, type:s.suggestedType||"مناسبة", date:s.suggestedDate||toISO(today), importance:"عادي", note:"", forWhom:"", senderName:s.senderName}};
+  renderFormPanel();
+  scrollToForm();
+}
+
+/* ---------- mood ---------- */
+function setMood(person, mood, note){
+  if(!isAdmin){ showToast("سجّل دخول كمدير أول"); return Promise.resolve(); }
+  var row={person:person, mood:mood, note:note||"", mood_date:toISO(today)};
+  return sb.from("moods").upsert(row,{onConflict:"person,mood_date"}).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر حفظ المزاج"); throw res.error; }
+    var mapped=rowToMood(res.data);
+    var idx=state.moods.findIndex(function(m){ return m.person===person && m.moodDate===mapped.moodDate; });
+    if(idx>=0) state.moods[idx]=mapped; else state.moods.unshift(mapped);
+    renderApp();
+    showToast("تم تحديث المزاج");
+  }, function(){});
+}
+
+/* ---------- calendar (shared card, used on home-less section page) ---------- */
+function dotColorVar(kind){
+  if(kind==="urgent") return "urgent";
+  if(kind==="warn") return "gold";
+  if(kind==="appt") return "sky";
+  if(kind==="birthday") return "lavender-ink";
+  if(kind==="national") return "blue-ink";
+  return "green-600";
+}
 function renderCalendarCard(){
   var first=new Date(viewYear,viewMonth,1);
   var startDow=first.getDay();
@@ -782,7 +1442,7 @@ function renderCalendarCard(){
     var dayItems=state.items.filter(function(it){ return it.date===iso; });
     var isToday=iso===todayIso;
     var chipsHtml=dayItems.slice(0,2).map(function(it){
-      return '<div class="cal-chip k-'+chipKind(it)+'" data-action="chip" data-id="'+it.id+'">'+escapeHtml(it.title)+'</div>';
+      return '<div class="cal-chip k-'+chipKind(it)+'" data-action="edit-item" data-id="'+it.id+'">'+escapeHtml(it.title)+'</div>';
     }).join("");
     var more=dayItems.length>2?'<div class="cal-more">+'+(dayItems.length-2)+'</div>':"";
     cells+='<button type="button" class="cal-cell'+(isToday?" today":"")+(dayItems.length?" has-items":"")+'" data-action="day-cell" data-date="'+iso+'"><span class="cal-daynum">'+d+'</span>'+chipsHtml+more+'</button>';
@@ -799,381 +1459,363 @@ function renderCalendarCard(){
   '</div>';
 }
 
-function renderRemindersCard(){
-  var items=state.items.filter(function(it){ return it.type==="تذكير"; })
-    .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
-  var body;
-  if(!items.length){
-    body='<div class="empty-note">لا توجد تذكيرات حالياً.</div>';
-  }else{
-    body='<div class="list">'+items.map(function(it){
-      var tier=urgencyTier(it.date);
-      var pillClass=tier==="urgent"?"urgent":(tier==="warn"?"warn":"ok");
-      var badge=importanceBadge(it.importance);
-      var meta="";
-      if(it.addedBy){ meta+='<div class="row-meta">أضافها: '+escapeHtml(it.addedBy)+'</div>'; }
-      if(it.note){ meta+='<div class="row-note">'+escapeHtml(it.note)+'</div>'; }
-      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0">'+
-        '<div class="row-main"><div class="row-title">'+escapeHtml(it.title)+'</div>'+(badge?'<div class="row-badges">'+badge+'</div>':'')+'<div class="row-sub">'+fmtHumanDate(it.date)+'</div>'+meta+'</div>'+
-        '<span class="pill '+pillClass+'">'+escapeHtml(fmtRelative(it.date))+'</span>'+
-      '</div>';
-    }).join("")+'</div>';
-  }
-  return '<div class="card card--reminders"><div class="card-head"><h3 class="card-title">'+icon("bell")+' تذكيرات مهمة</h3><span class="card-count">'+items.length+'</span></div>'+body+'</div>';
+/* ---------- generic row renderers for section/person lists ---------- */
+function itemRow(it, showPerson){
+  var meta=typeMeta(it.type);
+  var badge=importanceBadge(it.importance);
+  var pillKind=chipKind(it);
+  var pillClass=(pillKind==="urgent")?"urgent":(pillKind==="warn")?"warn":"ok";
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-item" data-id="'+it.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+icon(meta.icon)+' '+escapeHtml(it.title)+'</div>'+
+      (badge||(showPerson&&it.forWhom)?'<div class="row-badges">'+badge+(showPerson&&it.forWhom?'<span class="pill muted">'+escapeHtml(it.forWhom)+'</span>':'')+'</div>':'')+
+      '<div class="row-sub">'+escapeHtml(it.type)+' · '+fmtHumanDate(it.date)+'</div>'+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("item",it.id,it.favorite)+'<span class="pill '+pillClass+'">'+escapeHtml(fmtRelativeLong(it.date))+'</span></div>'+
+  '</div>';
+}
+function requestRow(r){
+  var isDone=r.status==="تم";
+  var forWhomPrefix = r.forWhom ? ('<b>'+escapeHtml(r.forWhom)+'</b> — ') : "";
+  var statusPill=isDone?'<span class="pill muted">تم</span>':(r.status==="جاري"?'<span class="pill warn">جاري</span>':'<span class="pill ok">جديد</span>');
+  var badge=importanceBadge(r.importance);
+  var secondaryBtn=(!isDone && r.status!=="جاري")
+    ? '<button type="button" class="status-secondary" data-action="mark-progress" data-id="'+r.id+'">بدء التنفيذ</button>' : "";
+  var meta="";
+  if(r.assignee){ meta+='<div class="row-meta">على: '+escapeHtml(r.assignee)+'</div>'; }
+  if(r.addedBy){ meta+='<div class="row-meta">أضافها: '+escapeHtml(r.addedBy)+'</div>'; }
+  if(r.note){ meta+='<div class="row-note">'+escapeHtml(r.note)+'</div>'; }
+  var actionsHtml='<div class="row-actions">'+
+    (isDone
+      ? '<button type="button" class="status-btn is-done" data-action="toggle-done" data-id="'+r.id+'">↺ تراجع</button>'
+      : '<button type="button" class="status-btn" data-action="toggle-done" data-id="'+r.id+'">تم</button>')+
+    '<button type="button" class="icon-btn" data-action="edit-request" data-id="'+r.id+'" aria-label="تعديل">'+icon("pencil")+'</button>'+
+    '<button type="button" class="icon-btn" data-action="delete-request" data-id="'+r.id+'" aria-label="حذف">'+icon("trash")+'</button>'+
+  '</div>';
+  return '<div class="row">'+
+    '<div class="row-main"><div class="row-title'+(isDone?" done":"")+'">'+forWhomPrefix+escapeHtml(r.text)+'</div>'+(badge?'<div class="row-badges">'+badge+'</div>':'')+'<div class="row-sub">'+statusPill+' · '+fmtAddedAt(r.addedAt)+(r.dueDate?(' · '+fmtHumanDate(r.dueDate)):'')+secondaryBtn+'</div>'+meta+'</div>'+
+    actionsHtml+
+  '</div>';
+}
+function taskRow(t){
+  var isDone=t.status==="مكتمل";
+  var statusPill=isDone?'<span class="pill muted">مكتمل</span>':(t.status==="جاري"?'<span class="pill warn">جاري</span>':'<span class="pill ok">جديد</span>');
+  var badge=importanceBadge(t.importance);
+  var meta="";
+  if(t.assignee){ meta+='<div class="row-meta">المسؤول: '+escapeHtml(t.assignee)+'</div>'; }
+  if(t.note){ meta+='<div class="row-note">'+escapeHtml(t.note)+'</div>'; }
+  return '<div class="row">'+
+    '<div class="row-main"><div class="row-title'+(isDone?" done":"")+'">'+(t.forWhom?('<b>'+escapeHtml(t.forWhom)+'</b> — '):'')+escapeHtml(t.task)+'</div>'+
+      (badge?'<div class="row-badges">'+badge+'</div>':'')+
+      '<div class="row-sub">'+statusPill+(t.date?(' · '+fmtHumanDate(t.date)):'')+'</div>'+meta+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("task",t.id,t.favorite)+
+      '<button type="button" class="status-btn'+(isDone?" is-done":"")+'" data-action="toggle-task-done" data-id="'+t.id+'">'+(isDone?"↺ تراجع":"تم")+'</button>'+
+      '<button type="button" class="icon-btn" data-action="edit-task" data-id="'+t.id+'" aria-label="تعديل">'+icon("pencil")+'</button>'+
+    '</div>'+
+  '</div>';
+}
+function billRow(b){
+  var t=todayDate();
+  var pillClass = b.dueDate ? (daysBetween(t,parseISO(b.dueDate))<=3?"urgent":(daysBetween(t,parseISO(b.dueDate))<=14?"warn":"ok")) : "muted";
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-bill" data-id="'+b.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+escapeHtml(b.name)+'</div>'+
+      '<div class="row-sub">'+(b.type?escapeHtml(b.type)+' · ':'')+(b.provider?escapeHtml(b.provider)+' · ':'')+(b.responsible?('المسؤول: '+escapeHtml(b.responsible)):'')+'</div>'+
+      (b.accountNumber?'<div class="row-meta">رقم الحساب: '+escapeHtml(b.accountNumber)+'</div>':'')+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("bill",b.id,b.favorite)+(b.dueDate?'<span class="pill '+pillClass+'">'+escapeHtml(fmtHumanDate(b.dueDate))+'</span>':'')+'</div>'+
+  '</div>';
+}
+function subscriptionRow(s){
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-subscription" data-id="'+s.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+escapeHtml(s.name)+'</div>'+
+      '<div class="row-sub">'+(s.owner?('باسم: '+escapeHtml(s.owner)+' · '):'')+escapeHtml(s.status)+'</div>'+
+      (s.email?'<div class="row-meta">'+escapeHtml(s.email)+'</div>':'')+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("subscription",s.id,s.favorite)+(s.renewalDate?'<span class="pill muted">'+escapeHtml(fmtHumanDate(s.renewalDate))+'</span>':'')+'</div>'+
+  '</div>';
+}
+function numberRow(n){
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-number" data-id="'+n.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+escapeHtml(n.name)+'</div>'+
+      '<div class="row-sub">'+(n.category?escapeHtml(n.category):'')+(n.forWhom?(' · '+escapeHtml(n.forWhom)):'')+'</div>'+
+      (n.phone?'<a class="tel-link" href="tel:'+escapeHtml(n.phone)+'" onclick="event.stopPropagation();">'+icon("phone")+' '+escapeHtml(n.phone)+'</a>':'')+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("number",n.id,n.favorite)+'</div>'+
+  '</div>';
+}
+function referenceRow(rf, showPerson){
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-reference" data-id="'+rf.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+(rf.refType?escapeHtml(rf.refType)+' — ':'')+escapeHtml(rf.refValue)+'</div>'+
+      '<div class="row-sub">'+(showPerson?escapeHtml(rf.person)+' · ':'')+(rf.entity?escapeHtml(rf.entity):'')+(rf.category?(' · '+escapeHtml(rf.category)):'')+'</div>'+
+      (rf.note?'<div class="row-note">'+escapeHtml(rf.note)+'</div>':'')+
+    '</div>'+
+  '</div>';
+}
+function noteRow(nt){
+  return '<div class="row">'+
+    '<div class="row-main" data-action="edit-note" data-id="'+nt.id+'" role="button" tabindex="0">'+
+      '<div class="row-title">'+escapeHtml(nt.text)+'</div>'+
+      '<div class="row-sub">'+fmtAddedAt(nt.createdAt)+(nt.addedBy?(' · '+escapeHtml(nt.addedBy)):'')+'</div>'+
+    '</div>'+
+    '<div class="row-actions">'+favIconBtn("note",nt.id,nt.favorite)+'</div>'+
+  '</div>';
+}
+function listCard(title, iconName, items, rowFn, emptyText, countOverride){
+  var body = items.length ? '<div class="list">'+items.map(rowFn).join("")+'</div>' : '<div class="empty-note">'+emptyText+'</div>';
+  return '<div class="card"><div class="card-head"><h3 class="card-title">'+icon(iconName)+' '+title+'</h3><span class="card-count">'+(countOverride!=null?countOverride:items.length)+'</span></div>'+body+'</div>';
 }
 
-function renderRequestsCard(){
-  var reqs=state.requests.slice().sort(function(a,b){
+/* ---------- person page ---------- */
+function personQuickAddBtn(entity, label, iconName, type){
+  return '<button type="button" class="quickadd-tile" data-action="open-add" data-entity="'+entity+'"'+(type?(' data-type="'+type+'"'):'')+'>'+icon(iconName)+'<span>'+label+'</span></button>';
+}
+function renderPersonPage(person){
+  var p=personOf(person);
+  if(!p){
+    return '<div class="section-wrap"><div class="card"><div class="empty-note">هذا الشخص غير موجود.</div></div></div>';
+  }
+  var mood=moodForPerson(person);
+  var moodBtns=MOOD_OPTIONS.map(function(m){
+    return '<button type="button" class="mood-btn'+(mood&&mood.mood===m.key?" active":"")+'" data-action="set-mood" data-person="'+escapeHtml(person)+'" data-mood="'+m.key+'" title="'+m.key+'">'+m.em+'</button>';
+  }).join("");
+  var hero='<div class="person-hero-wrap"><div class="person-hero">'+
+    '<span class="person-avatar tint-'+p.tint+'">'+p.emoji+'</span>'+
+    '<div><div class="person-hero-name">'+escapeHtml(person)+'</div>'+
+    '<div class="person-hero-mood" id="personMood">'+moodBtns+(mood&&mood.note?('<span class="row-note">'+escapeHtml(mood.note)+'</span>'):'')+'</div>'+
+    '</div></div></div>';
+
+  var addGrid='<div class="quickadd-grid-wrap" id="personAddGrid"><div class="quickadd-grid">'+
+    personQuickAddBtn("item","موعد","calendar","موعد")+
+    personQuickAddBtn("item","مناسبة","calendar","مناسبة")+
+    personQuickAddBtn("request","طلب","list")+
+    personQuickAddBtn("task","مهمة","tag")+
+    personQuickAddBtn("item","تذكير","bell","تذكير")+
+    personQuickAddBtn("note","ملاحظة","note")+
+    personQuickAddBtn("reference","معلومة / مرجع","hash")+
+  '</div></div>';
+
+  var formHost='<div class="entity-form-host hidden" id="entityFormHost"></div>';
+
+  var appts=state.items.filter(function(it){ return it.forWhom===person && it.type==="موعد"; }).sort(function(a,b){return a.date<b.date?-1:1;});
+  var occasions=state.items.filter(function(it){ return it.forWhom===person && it.type!=="موعد" && it.type!=="تذكير"; }).sort(function(a,b){return a.date<b.date?-1:1;});
+  var reminders=state.items.filter(function(it){ return it.forWhom===person && it.type==="تذكير"; }).sort(function(a,b){return a.date<b.date?-1:1;});
+  var requests=state.requests.filter(function(r){ return r.forWhom===person; });
+  var tasks=state.tasks.filter(function(t){ return t.forWhom===person; });
+  var notes=state.notes.filter(function(n){ return n.person===person; });
+  var refs=state.references.filter(function(rf){ return rf.person===person; });
+  var upcomingForPerson=state.items.filter(function(it){ return it.forWhom===person && daysBetween(todayDate(),parseISO(it.date))>=0; }).sort(function(a,b){return a.date<b.date?-1:1;}).slice(0,5);
+
+  var grid='<div class="home-grid">'+
+    listCard("القادم","calendar",upcomingForPerson,function(it){return itemRow(it,false);},"ما فيه شيء قادم لهذا الشخص.")+
+    listCard("المواعيد","calendar",appts,function(it){return itemRow(it,false);},"لا توجد مواعيد.")+
+    listCard("المناسبات","calendar",occasions,function(it){return itemRow(it,false);},"لا توجد مناسبات.")+
+    listCard("التذكيرات","bell",reminders,function(it){return itemRow(it,false);},"لا توجد تذكيرات.")+
+    listCard("الطلبات","list",requests,requestRow,"لا توجد طلبات.")+
+    listCard("المهام","tag",tasks,taskRow,"لا توجد مهام.")+
+    listCard("الملاحظات","note",notes,noteRow,"لا توجد ملاحظات.")+
+  '</div>';
+
+  var refsCard='<div class="section-wrap" style="padding-top:0;">'+
+    '<div class="card"><div class="card-head"><h3 class="card-title">'+icon("hash")+' معلومات الشخص — المراجع والأرقام المهمة</h3>'+
+      (isAdmin?'<button type="button" class="btn btn-primary btn-sm" data-action="open-add" data-entity="reference">'+icon("plus")+' أضف معلومة / مرجع</button>':'')+
+    '</div>'+(refs.length?'<div class="list">'+refs.map(function(rf){return referenceRow(rf,false);}).join("")+'</div>':'<div class="empty-note">لا توجد مراجع بعد لهذا الشخص.</div>')+
+    '</div></div>';
+
+  return hero+addGrid+formHost+grid+refsCard;
+}
+
+/* ---------- section pages ---------- */
+function sectionAddBtn(entity, label){
+  return '<button type="button" class="btn btn-primary btn-sm" data-action="open-add" data-entity="'+entity+'">'+icon("plus")+' '+label+'</button>';
+}
+function sectionHeaderRow(meta, addBtnHtml){
+  return '<div class="section-title-row"><h2 class="section-title">'+icon(meta.icon)+' '+meta.label+'</h2>'+(addBtnHtml||"")+'</div>';
+}
+function renderRequestsSection(){
+  var meta=sectionMeta("requests");
+  var list=state.requests.slice().sort(function(a,b){
     var order={"جديد":0,"جاري":1,"تم":2};
     var oa=order[a.status]!=null?order[a.status]:0, ob=order[b.status]!=null?order[b.status]:0;
     if(oa!==ob) return oa-ob;
     return (b.addedAt||"").localeCompare(a.addedAt||"");
   });
-  var body;
-  if(!reqs.length){
-    body='<div class="empty-note">لا توجد طلبات حالياً.</div>';
-  }else{
-    body='<div class="list">'+reqs.map(function(r){ return renderRequestRow(r, isAdmin); }).join("")+'</div>';
-  }
-  return '<div class="card card--requests"><div class="card-head"><h3 class="card-title">'+icon("list")+' أبرز الطلبات</h3><span class="card-count">'+reqs.length+'</span></div>'+body+'</div>';
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("request","أضف طلب"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+listCard("كل الطلبات","list",list,requestRow,"لا توجد طلبات حالياً.")+'</div>';
 }
-function renderRequestRow(r, isAdminView){
-  var isDone=r.status==="تم";
-  var isEditing=isAdminView && editingRequestId===r.id;
-  var titleHtml;
-  var forWhomPrefix = r.forWhom ? ('<b>'+escapeHtml(r.forWhom)+'</b> — ') : "";
-  if(isEditing){
-    titleHtml='<input type="text" class="req-title-input" id="reqEdit-'+r.id+'" data-action="request-edit-input" data-id="'+r.id+'" value="'+escapeHtml(r.text)+'">';
-  }else if(isAdminView){
-    titleHtml='<div class="row-title'+(isDone?" done":"")+'" data-action="request-edit-start" data-id="'+r.id+'" role="button" tabindex="0">'+forWhomPrefix+escapeHtml(r.text)+'</div>';
-  }else{
-    titleHtml='<div class="row-title'+(isDone?" done":"")+'">'+forWhomPrefix+escapeHtml(r.text)+'</div>';
-  }
-  var statusPill=isDone?'<span class="pill muted">تم</span>':(r.status==="جاري"?'<span class="pill warn">جاري</span>':'<span class="pill ok">جديد</span>');
-  var badge=importanceBadge(r.importance);
-  var secondaryBtn=(isAdminView && !isDone && r.status!=="جاري")
-    ? '<button type="button" class="status-secondary" data-action="mark-progress" data-id="'+r.id+'">بدء التنفيذ</button>' : "";
-  var meta="";
-  if(r.addedBy){ meta+='<div class="row-meta">أضافها: '+escapeHtml(r.addedBy)+'</div>'; }
-  if(r.note){ meta+='<div class="row-note">'+escapeHtml(r.note)+'</div>'; }
-  var actionsHtml="";
-  if(isAdminView){
-    var mainBtn=isDone
-      ? '<button type="button" class="status-btn is-done" data-action="toggle-done" data-id="'+r.id+'">↺ تراجع</button>'
-      : '<button type="button" class="status-btn" data-action="toggle-done" data-id="'+r.id+'">تم</button>';
-    actionsHtml='<div class="row-actions">'+mainBtn+'<button type="button" class="icon-btn" data-action="edit-request" data-id="'+r.id+'" aria-label="تعديل">'+icon("pencil")+'</button><button type="button" class="icon-btn" data-action="delete-request" data-id="'+r.id+'" aria-label="حذف">'+icon("trash")+'</button></div>';
-  }
-  return '<div class="row">'+
-    '<div class="row-main">'+titleHtml+(badge?'<div class="row-badges">'+badge+'</div>':'')+'<div class="row-sub">'+statusPill+' · '+fmtAddedAt(r.addedAt)+secondaryBtn+'</div>'+meta+'</div>'+
-    actionsHtml+
+function renderTasksSection(){
+  var meta=sectionMeta("tasks");
+  var list=state.tasks.slice().sort(function(a,b){
+    var order={"جديد":0,"جاري":1,"مكتمل":2};
+    var oa=order[a.status]!=null?order[a.status]:0, ob=order[b.status]!=null?order[b.status]:0;
+    if(oa!==ob) return oa-ob;
+    return (a.date||"9999")<(b.date||"9999")?-1:1;
+  });
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("task","أضف مهمة"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+listCard("كل المهام","tag",list,taskRow,"لا توجد مهام حالياً.")+'</div>';
+}
+function renderCalendarSection(){
+  var meta=sectionMeta("calendar");
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("item","أضف مناسبة / موعد"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+renderCalendarCard()+'</div>';
+}
+function renderBillsSection(){
+  var meta=sectionMeta("bills");
+  var list=state.bills.slice().sort(function(a,b){ return (a.dueDate||"9999")<(b.dueDate||"9999")?-1:1; });
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("bill","أضف فاتورة / خدمة"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+listCard("كل الفواتير والخدمات","receipt",list,billRow,"لا توجد فواتير أو خدمات بعد.")+'</div>';
+}
+function renderSubscriptionsSection(){
+  var meta=sectionMeta("subscriptions");
+  var list=state.subscriptions.slice().sort(function(a,b){ return (a.renewalDate||"9999")<(b.renewalDate||"9999")?-1:1; });
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("subscription","أضف اشتراك"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+listCard("كل الاشتراكات","layers",list,subscriptionRow,"لا توجد اشتراكات بعد.")+'</div>';
+}
+function renderNumbersSection(){
+  var meta=sectionMeta("numbers");
+  var list=state.numbers.slice().sort(function(a,b){ return (b.createdAt||"").localeCompare(a.createdAt||""); });
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("number","أضف رقم"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+listCard("كل الأرقام المهمة","hash",list,numberRow,"لا توجد أرقام مهمة بعد.")+'</div>';
+}
+function vehicleCard(v){
+  var facts=[
+    ["صاحبها",v.owner],["رقم اللوحة",v.plateNumber],
+    ["التأمين",v.insuranceDate?fmtHumanDate(v.insuranceDate):""],
+    ["الاستمارة",v.registrationDate?fmtHumanDate(v.registrationDate):""],
+    ["الفحص الدوري",v.inspectionDate?fmtHumanDate(v.inspectionDate):""],
+    ["آخر تغيير زيت",v.oilChangeDate?fmtHumanDate(v.oilChangeDate):""],
+    ["الصيانة",v.maintenanceNote]
+  ].filter(function(f){ return f[1]; });
+  return '<div class="card vehicle-card">'+
+    '<div class="card-head"><h3 class="card-title">'+icon("car")+' '+escapeHtml(v.name)+'</h3>'+favIconBtn("vehicle",v.id,v.favorite)+'</div>'+
+    '<div class="vehicle-facts">'+facts.map(function(f){ return '<div class="vehicle-fact"><b>'+f[0]+'</b><span>'+escapeHtml(f[1])+'</span></div>'; }).join("")+'</div>'+
+    (v.note?'<div class="row-note">'+escapeHtml(v.note)+'</div>':'')+
+    (isAdmin?'<div class="confirm-actions" style="margin-top:10px;"><button type="button" class="btn btn-ghost btn-sm" data-action="edit-vehicle" data-id="'+v.id+'">'+icon("pencil")+' أضف تحديث</button></div>':'')+
   '</div>';
 }
-function fmtAddedAt(iso){
-  if(!iso) return "";
-  var d=new Date(iso); d.setHours(0,0,0,0);
-  var diff=daysBetween(d, todayDate());
-  if(diff<=0) return "اليوم";
-  if(diff===1) return "أمس";
-  return "قبل "+diff+" يوم";
+function renderVehiclesSection(){
+  var meta=sectionMeta("vehicles");
+  var list=state.vehicles;
+  var body = list.length ? '<div class="vehicles-grid">'+list.map(vehicleCard).join("")+'</div>' : '<div class="card"><div class="empty-note">لا توجد سيارات مضافة بعد.</div></div>';
+  return sectionHeaderRow(meta, isAdmin?sectionAddBtn("vehicle","أضف سيارة"):"")+
+    '<div class="entity-form-host hidden" id="entityFormHost"></div>'+
+    '<div class="section-wrap">'+body+'</div>';
+}
+function renderFamilyBoxSection(){
+  var meta=sectionMeta("familybox");
+  return sectionHeaderRow(meta,"")+
+    '<div class="section-wrap"><div class="card card--familybox">'+
+    '<p class="familybox-hint">أي أحد بالعائلة يقدر يرسل اقتراح من هنا بدون تسجيل دخول، وتتم مراجعته قبل ما يظهر باللوحة. مثال: "ناصر جيب عشاء اليوم" أو "علاج أبوي ينتهي 15 سبتمبر".</p>'+
+    '<form id="familyboxForm" class="familybox-form">'+
+      '<input type="text" id="familyboxName" placeholder="اسمك" value="'+escapeHtml(getDisplayName())+'" required>'+
+      '<input type="text" id="familyboxText" placeholder="مثال: زواج خالد يوم 18 ديسمبر" required>'+
+      '<button type="submit" class="btn btn-primary">إرسال</button>'+
+    '</form>'+
+  '</div></div>';
+}
+function renderSectionPage(key){
+  if(key==="requests") return renderRequestsSection();
+  if(key==="tasks") return renderTasksSection();
+  if(key==="calendar") return renderCalendarSection();
+  if(key==="bills") return renderBillsSection();
+  if(key==="subscriptions") return renderSubscriptionsSection();
+  if(key==="numbers") return renderNumbersSection();
+  if(key==="vehicles") return renderVehiclesSection();
+  if(key==="familybox") return renderFamilyBoxSection();
+  return '<div class="section-wrap"><div class="card"><div class="empty-note">القسم غير موجود.</div></div></div>';
 }
 
+/* ---------- app shell / dispatch ---------- */
+var SECTION_DEFAULT_ENTITY={requests:"request",tasks:"task",calendar:"item",bills:"bill",numbers:"number",subscriptions:"subscription",vehicles:"vehicle"};
+function fabVisible(){ return isAdmin && (route.page==="person" || (route.page==="section" && SECTION_DEFAULT_ENTITY[route.section])); }
 function renderApp(){
   var app=document.getElementById("app");
+  var pageHtml;
+  if(route.page==="person"){ pageHtml=renderPersonPage(route.person); }
+  else if(route.page==="section"){ pageHtml=renderSectionPage(route.section); }
+  else { pageHtml=renderHomePage(); }
+
   app.innerHTML=
     renderHeader()+
     (showAdminLogin && !isAdmin ? renderAdminLoginBanner() : '')+
     renderIdentityBanner()+
     renderSearchBar()+
-    '<div id="dashboardSections">'+
-      renderFamilyBox()+
-      (isAdmin ? renderQuickAdd() : '')+
-      '<div id="confirmPanel" class="confirm-panel hidden"></div>'+
-      renderUpcomingCard()+
-      renderStatsRow()+
-      renderPendingCard()+
-      '<main class="layout">'+
-        '<aside class="col requests-col">'+renderRequestsCard()+'</aside>'+
-        '<section class="col calendar-col">'+renderCalendarCard()+'</section>'+
-      '</main>'+
-    '</div>'+
-    '<button type="button" id="fabAdd" class="fab" aria-label="إضافة">'+icon("plus")+'</button>'+
-    '<p class="foot-note">دارنا · نسخة تجريبية أولى</p>'+
+    '<div id="pageContent">'+pageHtml+'</div>'+
+    '<button type="button" id="fabAdd" class="fab'+(fabVisible()?"":" hidden")+'" aria-label="إضافة">'+icon("plus")+'</button>'+
+    '<p class="foot-note">دارنا · نسخة تجريبية V2</p>'+
     '<div id="toastHost" class="toast-host"></div>';
-  renderConfirmPanel();
+  renderFormPanel();
   updateSearchUI();
 }
 
-/* ---------- mutations (all read/write the shared Supabase database) ---------- */
-function addItem(type,title,date,opts){
-  opts=opts||{};
-  var row={title:title, date:date, type:type, note:opts.note||"", importance:opts.importance||"عادي", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
-  return sb.from("items").insert(row).select().single().then(function(res){
-    if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
-    var it=rowToItem(res.data);
-    state.items.push(it);
-    return it;
-  });
-}
-function updateItem(id,patch){
-  var row={};
-  if(patch.title!==undefined) row.title=patch.title;
-  if(patch.date!==undefined) row.date=patch.date;
-  if(patch.type!==undefined) row.type=patch.type;
-  if(patch.note!==undefined) row.note=patch.note;
-  if(patch.importance!==undefined) row.importance=patch.importance;
-  return sb.from("items").update(row).eq("id",id).select().single().then(function(res){
-    if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
-    var it=state.items.find(function(x){ return x.id===id; });
-    if(it) Object.assign(it, rowToItem(res.data));
-    return it;
-  });
-}
-function deleteItem(id){
-  var idx=state.items.findIndex(function(x){ return x.id===id; });
-  var removed = idx>=0 ? state.items[idx] : null;
-  return sb.from("items").delete().eq("id",id).then(function(res){
-    if(res.error){ showToast("تعذّر الحذف"); throw res.error; }
-    if(idx>=0) state.items.splice(idx,1);
-    return removed;
-  });
-}
-function addRequest(text,opts){
-  opts=opts||{};
-  var row={text:text, status:"جديد", note:opts.note||"", importance:opts.importance||"عادي", for_whom:opts.forWhom||"", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
-  return sb.from("requests").insert(row).select().single().then(function(res){
-    if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
-    var r=rowToRequest(res.data);
-    state.requests.push(r);
-    return r;
-  });
-}
-function updateRequest(id,patch){
-  var row={};
-  if(patch.text!==undefined) row.text=patch.text;
-  if(patch.status!==undefined) row.status=patch.status;
-  if(patch.note!==undefined) row.note=patch.note;
-  if(patch.importance!==undefined) row.importance=patch.importance;
-  if(patch.forWhom!==undefined) row.for_whom=patch.forWhom;
-  return sb.from("requests").update(row).eq("id",id).select().single().then(function(res){
-    if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
-    var r=state.requests.find(function(x){ return x.id===id; });
-    if(r) Object.assign(r, rowToRequest(res.data));
-    return r;
-  });
-}
-function deleteRequest(id){
-  var idx=state.requests.findIndex(function(x){ return x.id===id; });
-  var removed = idx>=0 ? state.requests[idx] : null;
-  return sb.from("requests").delete().eq("id",id).then(function(res){
-    if(res.error){ showToast("تعذّر الحذف"); throw res.error; }
-    if(idx>=0) state.requests.splice(idx,1);
-    return removed;
-  });
-}
-function addSubmission(senderName,text,suggestedType,suggestedDate){
-  var row={sender_name:senderName, text:text, suggested_type:suggestedType||null, suggested_date:suggestedDate||null, status:"pending", source:"dashboard"};
-  return sb.from("family_submissions").insert(row).then(function(res){
-    if(res.error){ showToast("تعذّر إرسال اقتراحك، حاول مرة ثانية"); throw res.error; }
-  });
-}
-function approveSubmission(id,type,title,date,importance,note){
-  var s=state.submissions.find(function(x){ return x.id===id; });
-  var senderName = s ? s.senderName : "";
-  var addPromise = (type==="طلب")
-    ? addRequest(title,{importance:importance,note:note,addedBy:senderName})
-    : addItem(type,title,date||toISO(today),{importance:importance,note:note,addedBy:senderName});
-  return addPromise.then(function(){
-    return sb.from("family_submissions").update({status:"approved"}).eq("id",id);
-  }).then(function(res){
-    if(res && res.error){ showToast("تمت الإضافة لكن تعذّر تحديث حالة الاقتراح"); }
-    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
-  });
-}
-function rejectSubmission(id){
-  var s=state.submissions.find(function(x){ return x.id===id; });
-  return sb.from("family_submissions").update({status:"rejected"}).eq("id",id).then(function(res){
-    if(res.error){ showToast("تعذّر الرفض"); throw res.error; }
-    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
-    return s;
-  });
-}
-
-/* ---------- confirm panel flow ---------- */
-function openConfirmForAdd(parsed, prefillDate){
-  confirmState={mode:"add", type:parsed.type, title:parsed.title, date:prefillDate||parsed.date, importance:"عادي", note:"", forWhom:"", focusTitle:false};
-  renderConfirmPanel();
-  scrollToConfirm();
-}
-function openConfirmForEditItem(id){
-  var it=state.items.find(function(x){ return x.id===id; });
-  if(!it) return;
-  confirmState={mode:"edit", id:id, kind:"item", type:it.type, title:it.title, date:it.date, importance:it.importance||"عادي", note:it.note||""};
-  renderConfirmPanel();
-  scrollToConfirm();
-}
-function openConfirmForEditRequest(id){
-  var r=state.requests.find(function(x){ return x.id===id; });
+/* ---------- status-change helpers (quick actions without opening the full form) ---------- */
+function toggleRequestDone(id){
+  var r=state.requests.find(function(x){return x.id===id;});
   if(!r) return;
-  confirmState={mode:"edit", id:id, kind:"request", type:"طلب", title:r.text, date:null, importance:r.importance||"عادي", note:r.note||"", forWhom:r.forWhom||""};
-  renderConfirmPanel();
-  scrollToConfirm();
-}
-function openConfirmForApproveSubmission(id){
-  var s=state.submissions.find(function(x){ return x.id===id; });
-  if(!s) return;
-  confirmState={mode:"approve-submission", id:id, type:s.suggestedType||"مناسبة", title:s.text, date:s.suggestedDate||toISO(today), importance:"عادي", note:"", senderName:s.senderName};
-  renderConfirmPanel();
-  scrollToConfirm();
-}
-function scrollToConfirm(){
-  setTimeout(function(){
-    var el=document.getElementById("confirmPanel");
-    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
-  },10);
-}
-function closeConfirm(){
-  confirmState=null;
-  renderConfirmPanel();
-}
-function saveConfirm(){
-  if(!confirmState) return;
-  var titleEl=document.getElementById("confirmTitle");
-  var dateEl=document.getElementById("confirmDate");
-  var noteEl=document.getElementById("confirmNote");
-  var forWhomEl=document.getElementById("confirmForWhom");
-  var title=(titleEl?titleEl.value:confirmState.title).trim();
-  if(!title){ showToast("اكتب عنوانًا قبل الحفظ"); return; }
-  var type=confirmState.type;
-  var importance=confirmState.importance||"عادي";
-  var note=noteEl?noteEl.value.trim():(confirmState.note||"");
-  var forWhom=forWhomEl?forWhomEl.value.trim():(confirmState.forWhom||"");
-  var date=dateEl?dateEl.value:confirmState.date;
-  if(!date) date=toISO(today);
-
-  var p;
-  if(confirmState.mode==="approve-submission"){
-    p=approveSubmission(confirmState.id, type, title, type==="طلب"?null:date, importance, note).then(function(){
-      showToast("تم الاعتماد، وأضيفت للوحة");
-    });
-  }else if(type==="طلب"){
-    if(confirmState.mode==="edit" && confirmState.id){
-      p=updateRequest(confirmState.id,{text:title, importance:importance, note:note, forWhom:forWhom}).then(function(){ showToast("تم تحديث الطلب"); });
-    }else{
-      p=addRequest(title,{importance:importance, note:note, forWhom:forWhom}).then(function(){ showToast("تمت إضافة الطلب"); });
-    }
-  }else{
-    if(confirmState.mode==="edit" && confirmState.id){
-      p=updateItem(confirmState.id,{title:title,type:type,date:date, importance:importance, note:note}).then(function(){ showToast("تم تحديث "+type); });
-    }else{
-      p=addItem(type,title,date,{importance:importance, note:note}).then(function(){ showToast(type+" جديد أُضيف للتقويم"); });
-    }
-  }
-  p.then(function(){
-    closeConfirm();
+  var newStatus = r.status==="تم" ? "جديد" : "تم";
+  sb.from("requests").update({status:newStatus}).eq("id",id).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر التحديث"); return; }
+    Object.assign(r, rowToRequest(res.data));
     renderApp();
-  }, function(){ /* the mutation already showed an error toast */ });
+  });
 }
-function deleteConfirmTarget(){
-  if(!confirmState || confirmState.mode!=="edit") return;
-  var isReq=confirmState.type==="طلب";
-  var delPromise = isReq ? deleteRequest(confirmState.id) : deleteItem(confirmState.id);
-  delPromise.then(function(removed){
-    closeConfirm();
+function markRequestProgress(id){
+  sb.from("requests").update({status:"جاري"}).eq("id",id).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر التحديث"); return; }
+    var r=state.requests.find(function(x){return x.id===id;});
+    if(r) Object.assign(r, rowToRequest(res.data));
     renderApp();
-    if(removed){
-      showToast("تم الحذف","تراجع",function(){
-        if(isReq){ addRequest(removed.text,{importance:removed.importance, note:removed.note, addedBy:removed.addedBy}).then(renderApp); }
-        else { addItem(removed.type, removed.title, removed.date, {importance:removed.importance, note:removed.note, addedBy:removed.addedBy}).then(renderApp); }
-      });
-    }
+  });
+}
+function deleteRequestQuick(id){
+  deleteEntity("request", id).then(function(removed){
+    renderApp();
+    if(removed) showToast("تم حذف الطلب","تراجع",function(){ saveEntity("request","add",null,{title:removed.text,importance:removed.importance,note:removed.note,forWhom:removed.forWhom,assignee:removed.assignee,addedBy:removed.addedBy}).then(renderApp); });
   }, function(){});
+}
+function toggleTaskDone(id){
+  var t=state.tasks.find(function(x){return x.id===id;});
+  if(!t) return;
+  var newStatus = t.status==="مكتمل" ? "جديد" : "مكتمل";
+  sb.from("tasks").update({status:newStatus}).eq("id",id).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر التحديث"); return; }
+    Object.assign(t, rowToTask(res.data));
+    renderApp();
+    if(newStatus==="مكتمل") logActivity("تم إكمال مهمة: "+t.task, "task");
+  });
 }
 
 /* ---------- event delegation ---------- */
 function onAppClick(e){
   var fab=e.target.closest("#fabAdd");
   if(fab){
-    var fabTargetId = isAdmin ? "quickaddInput" : "familyboxText";
-    var fabInput=document.getElementById(fabTargetId);
-    if(fabInput){ fabInput.scrollIntoView({behavior:"smooth", block:"center"}); fabInput.focus(); }
+    if(route.page==="person"){
+      var g=document.getElementById("personAddGrid");
+      if(g) g.scrollIntoView({behavior:"smooth", block:"center"});
+    }else if(route.page==="section"){
+      var ent=SECTION_DEFAULT_ENTITY[route.section];
+      if(ent) openForm(ent, {}, "add", null, null);
+    }
     return;
   }
   var t=e.target.closest("[data-action]");
-  if(!t){
-    return;
-  }
+  if(!t) return;
   var action=t.dataset.action;
   var id=t.dataset.id;
-  if(action==="chip"){
-    if(!isAdmin) return;
-    var it=state.items.find(function(x){ return x.id===id; });
-    if(it) openConfirmForEditItem(id);
-  }else if(action==="toggle-done"){
-    if(!isAdmin) return;
-    var r=state.requests.find(function(x){ return x.id===id; });
-    if(r){ updateRequest(id,{status: r.status==="تم"?"جديد":"تم"}).then(renderApp, function(){}); }
-  }else if(action==="mark-progress"){
-    if(!isAdmin) return;
-    updateRequest(id,{status:"جاري"}).then(renderApp, function(){});
-  }else if(action==="delete-request"){
-    if(!isAdmin) return;
-    deleteRequest(id).then(function(removedR){
-      renderApp();
-      if(removedR){ showToast("تم حذف الطلب","تراجع",function(){ addRequest(removedR.text,{importance:removedR.importance, note:removedR.note, addedBy:removedR.addedBy}).then(renderApp); }); }
-    }, function(){});
-  }else if(action==="edit-request"){
-    if(!isAdmin) return;
-    openConfirmForEditRequest(id);
-  }else if(action==="request-edit-start"){
-    if(!isAdmin) return;
-    editingRequestId=id;
-    renderApp();
-    var input=document.getElementById("reqEdit-"+id);
-    if(input){ input.focus(); input.select(); }
-  }else if(action==="next-month"){
-    viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;} renderApp();
-  }else if(action==="prev-month"){
-    viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} renderApp();
-  }else if(action==="day-cell"){
-    if(!isAdmin) return;
-    var date=t.dataset.date;
-    openConfirmForAdd({type:"مناسبة", title:""}, date);
-    var ti=document.getElementById("confirmTitle");
-    if(ti){ ti.focus(); }
-  }else if(action==="confirm-type"){
-    if(confirmState){ confirmState.type=t.dataset.type; renderConfirmPanel(); }
-  }else if(action==="confirm-importance"){
-    if(confirmState){ confirmState.importance=t.dataset.imp; renderConfirmPanel(); }
-  }else if(action==="confirm-cancel"){
-    closeConfirm();
-  }else if(action==="confirm-save"){
-    saveConfirm();
-  }else if(action==="confirm-delete"){
-    deleteConfirmTarget();
-  }else if(action==="confirm-reject-submission"){
-    var pendingId=confirmState.id;
-    rejectSubmission(pendingId).then(function(removedSub){
-      closeConfirm();
-      renderApp();
-      if(removedSub){ showToast("تم الرفض","تراجع",function(){ sb.from("family_submissions").update({status:"pending"}).eq("id",pendingId).then(function(){ return loadPending(); }).then(renderApp); }); }
-    }, function(){});
-  }else if(action==="approve-submission"){
-    var s1=state.submissions.find(function(x){ return x.id===id; });
-    if(s1){ approveSubmission(id, s1.suggestedType||"مناسبة", s1.text, s1.suggestedDate, "عادي", "").then(function(){ renderApp(); showToast("تم الاعتماد، وأضيفت للوحة"); }, function(){}); }
-  }else if(action==="edit-submission"){
-    openConfirmForApproveSubmission(id);
-  }else if(action==="reject-submission"){
-    rejectSubmission(id).then(function(rs){
-      renderApp();
-      if(rs){ showToast("تم الرفض","تراجع",function(){ sb.from("family_submissions").update({status:"pending"}).eq("id",id).then(function(){ return loadPending(); }).then(renderApp); }); }
-    }, function(){});
-  }else if(action==="admin-login-toggle"){
-    showAdminLogin=!showAdminLogin;
-    renderApp();
-  }else if(action==="admin-login-cancel"){
-    showAdminLogin=false;
-    renderApp();
-  }else if(action==="admin-login-send"){
+
+  if(action==="admin-login-toggle"){ showAdminLogin=!showAdminLogin; renderApp(); }
+  else if(action==="admin-login-cancel"){ showAdminLogin=false; renderApp(); }
+  else if(action==="admin-login-send"){
     var emailInput=document.getElementById("adminEmailInput");
     var email=emailInput?emailInput.value.trim():"";
     if(!email){ showToast("اكتب بريدك الإلكتروني"); return; }
@@ -1183,29 +1825,72 @@ function onAppClick(e){
       renderApp();
       showToast("تم إرسال رابط الدخول — افتحه من بريدك على نفس الجهاز");
     });
-  }else if(action==="admin-logout"){
-    signOutAdmin().then(function(){ renderApp(); });
-  }else if(action==="save-identity"){
+  }
+  else if(action==="admin-logout"){ signOutAdmin().then(function(){ renderApp(); }); }
+  else if(action==="save-identity"){
     var nameInput=document.getElementById("identityInput");
     var nm=nameInput?nameInput.value.trim():"";
     if(nm){ setDisplayName(nm); renderApp(); }
-  }else if(action==="clear-search"){
-    searchQuery="";
-    var si=document.getElementById("searchInput");
-    if(si) si.value="";
-    updateSearchUI();
+  }
+  else if(action==="clear-search"){ searchQuery=""; var si=document.getElementById("searchInput"); if(si) si.value=""; updateSearchUI(); }
+  else if(action==="open-add"){
+    if(!isAdmin) return;
+    var entity=t.dataset.entity, person=t.dataset.person, presetType=t.dataset.type;
+    var presetFields={};
+    if(route.page==="person"){ person=route.person; }
+    if(person){
+      if(entity==="reference" || entity==="note") presetFields.person=person;
+      else presetFields.forWhom=person;
+    }
+    if(presetType) presetFields.type=presetType;
+    openForm(entity, presetFields, "add", null, person||null);
+  }
+  else if(action==="ef-chip"){ if(entityForm){ entityForm.fields[t.dataset.field]=t.dataset.value; renderFormPanel(); } }
+  else if(action==="entity-cancel"){ closeForm(); }
+  else if(action==="entity-delete"){ deleteFormTarget(); }
+  else if(action==="edit-item"){ openEditGeneric("item", id); }
+  else if(action==="edit-request"){ openEditGeneric("request", id); }
+  else if(action==="edit-task"){ openEditGeneric("task", id); }
+  else if(action==="edit-bill"){ openEditGeneric("bill", id); }
+  else if(action==="edit-subscription"){ openEditGeneric("subscription", id); }
+  else if(action==="edit-vehicle"){ openEditGeneric("vehicle", id); }
+  else if(action==="edit-number"){ openEditGeneric("number", id); }
+  else if(action==="edit-reference"){ openEditGeneric("reference", id); }
+  else if(action==="edit-note"){ openEditGeneric("note", id); }
+  else if(action==="toggle-favorite"){ toggleFavorite(t.dataset.entity, id); }
+  else if(action==="toggle-done"){ if(isAdmin) toggleRequestDone(id); }
+  else if(action==="mark-progress"){ if(isAdmin) markRequestProgress(id); }
+  else if(action==="delete-request"){ if(isAdmin) deleteRequestQuick(id); }
+  else if(action==="toggle-task-done"){ if(isAdmin) toggleTaskDone(id); }
+  else if(action==="set-mood"){ setMood(t.dataset.person, t.dataset.mood, ""); }
+  else if(action==="next-month"){ viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;} renderApp(); }
+  else if(action==="prev-month"){ viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} renderApp(); }
+  else if(action==="day-cell"){
+    if(!isAdmin) return;
+    openForm("item", {type:"مناسبة", date:t.dataset.date}, "add", null, null);
+  }
+  else if(action==="approve-submission"){ if(isAdmin) openConfirmForApproveSubmission(id); }
+  else if(action==="edit-submission"){ if(isAdmin) openConfirmForApproveSubmission(id); }
+  else if(action==="reject-submission"){
+    if(!isAdmin) return;
+    rejectSubmission(id).then(function(rs){
+      renderApp();
+      if(rs){ showToast("تم الرفض","تراجع",function(){ sb.from("family_submissions").update({status:"pending"}).eq("id",id).then(function(){ return loadPending(); }).then(renderApp); }); }
+    }, function(){});
+  }
+  else if(action==="confirm-reject-submission"){
+    if(!isAdmin) return;
+    rejectSubmission(id).then(function(rs){
+      closeForm();
+      renderApp();
+      if(rs){ showToast("تم الرفض"); }
+    }, function(){});
   }
 }
 function onAppSubmit(e){
-  if(e.target && e.target.id==="quickaddForm"){
-    if(!isAdmin) return;
+  if(e.target && e.target.id==="entityFormEl"){
     e.preventDefault();
-    var input=document.getElementById("quickaddInput");
-    var raw=input.value;
-    if(!raw || !raw.trim()) return;
-    var parsed=parseQuickAdd(raw);
-    input.value="";
-    openConfirmForAdd(parsed);
+    saveForm();
   }else if(e.target && e.target.id==="familyboxForm"){
     e.preventDefault();
     var nameEl=document.getElementById("familyboxName");
@@ -1219,25 +1904,9 @@ function onAppSubmit(e){
     addSubmission(name, text, parsed2.type, parsed2.type==="طلب"?null:parsed2.date).then(function(){
       textEl.value="";
       showToast("تم إرسالها للعائلة ✅");
-    }, function(){ /* error toast already shown */ }).then(function(){
+    }, function(){}).then(function(){
       if(submitBtn) submitBtn.disabled=false;
     });
-  }
-}
-function onAppFocusOut(e){
-  var t=e.target;
-  if(t && t.dataset && t.dataset.action==="request-edit-input"){
-    if(!isAdmin) return;
-    var id=t.dataset.id;
-    var val=t.value.trim();
-    editingRequestId=null;
-    if(val){ updateRequest(id,{text:val}).then(renderApp, renderApp); } else { renderApp(); }
-  }
-}
-function onAppKeydown(e){
-  if(e.target && e.target.dataset && e.target.dataset.action==="request-edit-input"){
-    if(e.key==="Enter"){ e.preventDefault(); e.target.blur(); }
-    if(e.key==="Escape"){ editingRequestId=null; renderApp(); }
   }
 }
 var searchDebounce=null;
@@ -1254,9 +1923,14 @@ function init(){
   var app=document.getElementById("app");
   app.addEventListener("click", onAppClick);
   app.addEventListener("submit", onAppSubmit);
-  app.addEventListener("focusout", onAppFocusOut);
-  app.addEventListener("keydown", onAppKeydown);
   app.addEventListener("input", onAppInput);
+
+  window.addEventListener("hashchange", function(){
+    route=parseRoute();
+    entityForm=null;
+    renderApp();
+    window.scrollTo(0,0);
+  });
 
   renderApp();
 
@@ -1271,6 +1945,7 @@ function init(){
     isAdmin=!!(session && session.user && session.user.email===ADMIN_EMAIL);
     if(window.location.hash && window.location.hash.indexOf("access_token")>-1){
       try{ history.replaceState(null, "", window.location.pathname+window.location.search); }catch(e){}
+      route=parseRoute();
     }
     loadPending().then(renderApp);
   });
@@ -1290,7 +1965,7 @@ if(document.readyState==="loading"){
   init();
 }
 })();
-
 </script>
 </body>
 </html>
+
