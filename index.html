@@ -181,10 +181,9 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 /* layout */
 .layout{max-width:1180px; margin:0 auto; padding:0 16px 24px; display:grid; grid-template-columns:1fr; gap:16px;}
 @media (min-width:960px){
-  .layout{grid-template-columns:280px 1fr 300px; align-items:start;}
+  .layout{grid-template-columns:340px 1fr; align-items:start;}
   .layout .calendar-col{order:2;}
   .layout .requests-col{order:1;}
-  .layout .reminders-col{order:3;}
 }
 .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:18px;}
 .card--reminders{background:var(--green-100);}
@@ -215,6 +214,8 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .cal-chip.k-urgent{background:var(--urgent-bg); color:var(--urgent);}
 .cal-chip.k-warn{background:var(--gold-bg); color:var(--gold);}
 .cal-chip.k-gold{background:var(--sand-100); color:var(--ink-soft);}
+.cal-chip.k-birthday{background:var(--lavender-100); color:var(--lavender-ink);}
+.cal-chip.k-national{background:var(--blue-100); color:var(--blue-ink);}
 .cal-more{font-size:10px; color:var(--ink-faint); padding:0 5px;}
 @media (max-width:520px){
   .cal-cell{min-height:50px; font-size:11px;}
@@ -281,6 +282,7 @@ function uid(){return "i"+Date.now().toString(36)+Math.random().toString(36).sli
 function normalizeDigits(s){var map={"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"}; return s.replace(/[٠-٩]/g,function(d){return map[d];});}
 
 var WEEKDAYS_SHORT=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+var WEEKDAYS_FULL=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 var MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
 function fmtHumanDate(iso){
@@ -320,9 +322,25 @@ var ICON={
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
   mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>',
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5.2 3.6 9.4 8 11 4.4-1.6 8-5.8 8-11V5l-8-3z"/></svg>'
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5.2 3.6 9.4 8 11 4.4-1.6 8-5.8 8-11V5l-8-3z"/></svg>',
+  renew:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>',
+  cake:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/><path d="M4 21h16"/><path d="M12 13V8"/><path d="M9 13V9"/><path d="M15 13V9"/><circle cx="12" cy="5" r="1.4"/></svg>',
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/></svg>',
+  plane:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12 21 4l-8 19-2-8-8-3z"/></svg>'
 };
 function icon(name){return '<span class="icon">'+ICON[name]+'</span>';}
+
+/* ---------- calendar type metadata (V2): icon + color-kind per item type ---------- */
+var TYPE_META={
+  "مناسبة":{icon:"calendar", kind:"gold"},
+  "موعد":{icon:"calendar", kind:"appt"},
+  "تذكير":{icon:"bell", kind:"warn"},
+  "تجديد":{icon:"renew", kind:"warn"},
+  "عيد ميلاد":{icon:"cake", kind:"birthday"},
+  "مناسبة وطنية":{icon:"flag", kind:"national"},
+  "سفر":{icon:"plane", kind:"gold"}
+};
+function typeMeta(type){ return TYPE_META[type] || TYPE_META["مناسبة"]; }
 
 /* ---------- Supabase client (shared family database) ---------- */
 var SUPABASE_URL="https://puxvfngwbgoqxqaphayv.supabase.co";
@@ -339,7 +357,7 @@ function setDisplayName(n){ try{ localStorage.setItem("darna_display_name", n); 
 
 /* ---------- row <-> app-state mapping (Supabase columns are snake_case) ---------- */
 function rowToItem(row){ return {id:row.id, title:row.title, date:row.date, type:row.type, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", addedAt:row.created_at}; }
-function rowToRequest(row){ return {id:row.id, text:row.text, status:row.status, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", addedAt:row.created_at}; }
+function rowToRequest(row){ return {id:row.id, text:row.text, status:row.status, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", forWhom:row.for_whom||"", addedAt:row.created_at}; }
 function rowToSubmission(row){ return {id:row.id, senderName:row.sender_name, text:row.text, suggestedType:row.suggested_type, suggestedDate:row.suggested_date, status:row.status, source:row.source, createdAt:row.created_at}; }
 
 /* ---------- remote data loading ---------- */
@@ -387,14 +405,18 @@ function signOutAdmin(){
 /* ---------- quick-add parsing ---------- */
 var REQUEST_KW=["جيب","هات","اشتري","إشتري","احجز","إحجز","اطلب","إطلب","ابغى","أبغى","نبغى","نحتاج","تحتاج له","دلوني على"];
 var EVENT_KW={
-  "مناسبة":["ميلاد","عيد ميلاد","زواج","خطوبة","حفل","مناسبة","اليوم الوطني"],
+  "عيد ميلاد":["عيد ميلاد","ميلاد"],
+  "مناسبة وطنية":["اليوم الوطني","وطني"],
+  "تجديد":["تجديد","تجديدات","يتجدد","رخصة","ترخيص"],
+  "سفر":["سفر","رحلة","سفرية","مطار","طيران","نسافر"],
   "موعد":["موعد","دكتور","طبيب","مستشفى","عيادة","كشف","فحص"],
-  "تذكير":["ينتهي","تنتهي","ينهي","خلص","يخلص","باقي","تجديد","ينزل"]
+  "تذكير":["ينتهي","تنتهي","ينهي","خلص","يخلص","باقي","ينزل"],
+  "مناسبة":["زواج","خطوبة","حفل","مناسبة"]
 };
 function detectType(text){
   var i,k;
   for(i=0;i<REQUEST_KW.length;i++){ if(text.indexOf(REQUEST_KW[i])>-1) return "طلب"; }
-  var types=["مناسبة","موعد","تذكير"];
+  var types=["عيد ميلاد","مناسبة وطنية","تجديد","سفر","موعد","تذكير","مناسبة"];
   for(i=0;i<types.length;i++){
     var kws=EVENT_KW[types[i]];
     for(k=0;k<kws.length;k++){ if(text.indexOf(kws[k])>-1) return types[i]; }
@@ -491,8 +513,21 @@ function renderHeader(){
     '</header>';
 }
 function todayLabel(){
-  var days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-  return days[today.getDay()]+"، "+today.getDate()+" "+MONTHS[today.getMonth()]+" "+today.getFullYear();
+  return WEEKDAYS_FULL[today.getDay()]+"، "+today.getDate()+" "+MONTHS[today.getMonth()]+" "+today.getFullYear();
+}
+function arDaysPhrase(n){
+  if(n<0) return "متأخر "+Math.abs(n)+" يوم";
+  if(n===0) return "اليوم";
+  if(n===1) return "غدًا";
+  if(n===2) return "بعد يومين";
+  if(n<=10) return "بعد "+n+" أيام";
+  return "بعد "+n+" يومًا";
+}
+function fmtRelativeLong(iso){
+  var diff=daysBetween(todayDate(), parseISO(iso));
+  if(diff>=2 && diff<=6) return WEEKDAYS_FULL[parseISO(iso).getDay()];
+  if(diff>20) return fmtHumanDate(iso);
+  return arDaysPhrase(diff);
 }
 
 function renderAdminLoginBanner(){
@@ -572,7 +607,7 @@ function renderConfirmPanel(){
   if(!el) return;
   if(!confirmState){ el.classList.add("hidden"); el.innerHTML=""; return; }
   el.classList.remove("hidden");
-  var types=["تذكير","طلب","مناسبة","موعد"];
+  var types=["طلب","مناسبة","موعد","تذكير","تجديد","عيد ميلاد","مناسبة وطنية","سفر"];
   var chips=types.map(function(t){
     return '<button type="button" class="type-chip'+(confirmState.type===t?" active":"")+'" data-action="confirm-type" data-type="'+t+'">'+t+'</button>';
   }).join("");
@@ -584,6 +619,9 @@ function renderConfirmPanel(){
   var dateField=isRequest?"":(
     '<div class="field"><label for="confirmDate">التاريخ</label><input type="date" id="confirmDate" value="'+(confirmState.date||toISO(today))+'"></div>'
   );
+  var forWhomField=isRequest?(
+    '<div class="field"><label for="confirmForWhom">على مين؟ (اختياري)</label><input type="text" id="confirmForWhom" value="'+escapeHtml(confirmState.forWhom||"")+'" placeholder="مثال: ناصر"></div>'
+  ):"";
   var senderNote = confirmState.mode==="approve-submission" ? '<p class="confirm-sender">من صندوق العائلة — أرسلها: '+escapeHtml(confirmState.senderName||"")+'</p>' : "";
   var panelTitle = confirmState.mode==="approve-submission" ? "مراجعة الاقتراح قبل الاعتماد" : "تأكيد الإضافة";
   var saveLabel = confirmState.mode==="approve-submission" ? "اعتماد" : "حفظ";
@@ -600,6 +638,7 @@ function renderConfirmPanel(){
     '<div class="confirm-fields">'+
       '<div class="field"><label for="confirmTitle">'+(isRequest?"الطلب":"العنوان")+'</label><input type="text" id="confirmTitle" value="'+escapeHtml(confirmState.title)+'"></div>'+
       dateField+
+      forWhomField+
     '</div>'+
     '<p class="confirm-subtitle">درجة الأهمية</p>'+
     '<div class="type-chips">'+impChips+'</div>'+
@@ -620,52 +659,62 @@ function upcomingItems(limit){
   var t=todayDate();
   return state.items.filter(function(it){ return daysBetween(t, parseISO(it.date))>=0; })
     .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; })
-    .slice(0,limit||5);
+    .slice(0,limit||7);
 }
 
 function chipKind(it){
-  if(it.type==="موعد") return "appt";
   if(it.type==="تذكير"){
     var tier=urgencyTier(it.date);
     if(tier==="urgent") return "urgent";
     if(tier==="warn") return "warn";
     return "ok";
   }
-  return "gold";
-}
-
-function renderUpcomingStrip(){
-  var items=upcomingItems(5);
-  var inner;
-  if(!items.length){
-    inner='<div class="upcoming-empty">ما فيه شيء قادم حاليًا — أضف مناسبة أو تذكير من الأعلى.</div>';
-  }else{
-    inner=items.map(function(it){
-      var diff=daysBetween(todayDate(), parseISO(it.date));
-      var when= diff<=6 ? WEEKDAYS_SHORT[parseISO(it.date).getDay()] : fmtHumanDate(it.date);
-      var kind=chipKind(it);
-      var badge=importanceBadge(it.importance);
-      return '<div class="upcoming-chip" data-action="chip" data-id="'+it.id+'"><span class="dot k-'+kind+'" style="background:var(--'+dotColorVar(kind)+')"></span><b>'+escapeHtml(when)+'</b><span>— '+escapeHtml(it.title)+'</span>'+badge+'</div>';
-    }).join("");
-  }
-  return '<section class="upcoming-strip"><div class="shell">'+inner+'</div></section>';
+  return typeMeta(it.type).kind;
 }
 function dotColorVar(kind){
   if(kind==="urgent") return "urgent";
   if(kind==="warn") return "gold";
   if(kind==="appt") return "sky";
-  if(kind==="gold") return "green-600";
+  if(kind==="birthday") return "lavender-ink";
+  if(kind==="national") return "blue-ink";
   return "green-600";
+}
+
+/* القادم — the most prominent card, always at the very top of the dashboard */
+function renderUpcomingCard(){
+  var items=upcomingItems(7);
+  var body;
+  if(!items.length){
+    body='<div class="empty-note">ما فيه شيء قادم حاليًا — أضف مناسبة أو تذكير من الأعلى.</div>';
+  }else{
+    body='<div class="list">'+items.map(function(it){
+      var meta=typeMeta(it.type);
+      var badge=importanceBadge(it.importance);
+      var pillKind=chipKind(it);
+      var pillClass=(pillKind==="urgent")?"urgent":(pillKind==="warn")?"warn":"ok";
+      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0">'+
+        '<div class="row-main">'+
+          '<div class="row-title">'+icon(meta.icon)+' '+escapeHtml(it.title)+'</div>'+
+          (badge?'<div class="row-badges">'+badge+'</div>':'')+
+          '<div class="row-sub">'+escapeHtml(it.type)+' · '+fmtHumanDate(it.date)+'</div>'+
+        '</div>'+
+        '<span class="pill '+pillClass+'">'+escapeHtml(fmtRelativeLong(it.date))+'</span>'+
+      '</div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="upcoming-wrap"><div class="card card--upcoming"><div class="card-head"><h3 class="card-title">'+icon("calendar")+' القادم</h3><span class="card-count">'+items.length+'</span></div>'+body+'</div></div>';
 }
 
 function thisWeekStats(){
   var t=todayDate();
   var end=new Date(t); end.setDate(end.getDate()+6);
   var endIso=toISO(end), tIso=toISO(t);
-  var events=state.items.filter(function(it){ return (it.type==="مناسبة"||it.type==="موعد") && it.date>=tIso && it.date<=endIso; }).length;
+  var inWeek=function(it){ return it.date>=tIso && it.date<=endIso; };
+  var occasions=state.items.filter(function(it){ return it.type!=="موعد" && it.type!=="تذكير" && inWeek(it); }).length;
+  var appts=state.items.filter(function(it){ return it.type==="موعد" && inWeek(it); }).length;
   var openRequests=state.requests.filter(function(r){ return r.status!=="تم"; }).length;
-  var remindersDue=state.items.filter(function(it){ return it.type==="تذكير" && it.date>=tIso && it.date<=endIso; }).length;
-  return {events:events, requests:openRequests, reminders:remindersDue};
+  var needsAction=urgentNowList().length;
+  return {occasions:occasions, appts:appts, requests:openRequests, needsAction:needsAction};
 }
 function urgentNowList(){
   var remUrgent=state.items.filter(function(it){ return it.type==="تذكير" && urgencyTier(it.date)==="urgent"; });
@@ -673,18 +722,22 @@ function urgentNowList(){
   var flaggedReq=state.requests.filter(function(r){ return r.importance==="عاجل" && r.status!=="تم"; });
   return remUrgent.concat(flaggedItems).concat(flaggedReq).slice(0,5);
 }
+function urgentRowLabel(x){
+  if(x.text!==undefined){ return "طلب عاجل: "+x.text; }
+  var diff=daysBetween(todayDate(), parseISO(x.date));
+  return x.title+" — "+arDaysPhrase(diff);
+}
 function renderStatsRow(){
   var stats=thisWeekStats();
   var urgent=urgentNowList();
   var urgentBody=urgent.length
     ? '<div class="list compact">'+urgent.map(function(x){
-        var title=(x.text!==undefined)?x.text:x.title;
-        return '<div class="row-mini">'+escapeHtml(title)+'</div>';
+        return '<div class="row-mini">'+escapeHtml(urgentRowLabel(x))+'</div>';
       }).join("")+'</div>'
     : '<div class="empty-note">ولا شي عاجل حاليًا.</div>';
   return '<div class="stats-row">'+
-    '<div class="card card--thisweek stat-tile"><h4 class="stat-title">هذا الأسبوع</h4><p class="stat-line">'+stats.events+' مناسبات · '+stats.requests+' طلبات مفتوحة · '+stats.reminders+' تذكير يحتاج إجراء</p></div>'+
     '<div class="card card--urgent stat-tile"><h4 class="stat-title">الأمور العاجلة</h4>'+urgentBody+'</div>'+
+    '<div class="card card--thisweek stat-tile"><h4 class="stat-title">هذا الأسبوع</h4><p class="stat-line">'+stats.occasions+' مناسبات · '+stats.appts+' مواعيد · '+stats.requests+' طلبات مفتوحة · '+stats.needsAction+' يحتاج إجراء</p></div>'+
   '</div>';
 }
 
@@ -788,12 +841,13 @@ function renderRequestRow(r, isAdminView){
   var isDone=r.status==="تم";
   var isEditing=isAdminView && editingRequestId===r.id;
   var titleHtml;
+  var forWhomPrefix = r.forWhom ? ('<b>'+escapeHtml(r.forWhom)+'</b> — ') : "";
   if(isEditing){
     titleHtml='<input type="text" class="req-title-input" id="reqEdit-'+r.id+'" data-action="request-edit-input" data-id="'+r.id+'" value="'+escapeHtml(r.text)+'">';
   }else if(isAdminView){
-    titleHtml='<div class="row-title'+(isDone?" done":"")+'" data-action="request-edit-start" data-id="'+r.id+'" role="button" tabindex="0">'+escapeHtml(r.text)+'</div>';
+    titleHtml='<div class="row-title'+(isDone?" done":"")+'" data-action="request-edit-start" data-id="'+r.id+'" role="button" tabindex="0">'+forWhomPrefix+escapeHtml(r.text)+'</div>';
   }else{
-    titleHtml='<div class="row-title'+(isDone?" done":"")+'">'+escapeHtml(r.text)+'</div>';
+    titleHtml='<div class="row-title'+(isDone?" done":"")+'">'+forWhomPrefix+escapeHtml(r.text)+'</div>';
   }
   var statusPill=isDone?'<span class="pill muted">تم</span>':(r.status==="جاري"?'<span class="pill warn">جاري</span>':'<span class="pill ok">جديد</span>');
   var badge=importanceBadge(r.importance);
@@ -831,14 +885,13 @@ function renderApp(){
     renderIdentityBanner()+
     renderSearchBar()+
     '<div id="dashboardSections">'+
-      (isAdmin ? renderQuickAdd() : '')+
       renderFamilyBox()+
+      (isAdmin ? renderQuickAdd() : '')+
       '<div id="confirmPanel" class="confirm-panel hidden"></div>'+
-      renderUpcomingStrip()+
+      renderUpcomingCard()+
       renderStatsRow()+
       renderPendingCard()+
       '<main class="layout">'+
-        '<aside class="col reminders-col">'+renderRemindersCard()+'</aside>'+
         '<aside class="col requests-col">'+renderRequestsCard()+'</aside>'+
         '<section class="col calendar-col">'+renderCalendarCard()+'</section>'+
       '</main>'+
@@ -886,7 +939,7 @@ function deleteItem(id){
 }
 function addRequest(text,opts){
   opts=opts||{};
-  var row={text:text, status:"جديد", note:opts.note||"", importance:opts.importance||"عادي", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
+  var row={text:text, status:"جديد", note:opts.note||"", importance:opts.importance||"عادي", for_whom:opts.forWhom||"", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
   return sb.from("requests").insert(row).select().single().then(function(res){
     if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
     var r=rowToRequest(res.data);
@@ -900,6 +953,7 @@ function updateRequest(id,patch){
   if(patch.status!==undefined) row.status=patch.status;
   if(patch.note!==undefined) row.note=patch.note;
   if(patch.importance!==undefined) row.importance=patch.importance;
+  if(patch.forWhom!==undefined) row.for_whom=patch.forWhom;
   return sb.from("requests").update(row).eq("id",id).select().single().then(function(res){
     if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
     var r=state.requests.find(function(x){ return x.id===id; });
@@ -946,7 +1000,7 @@ function rejectSubmission(id){
 
 /* ---------- confirm panel flow ---------- */
 function openConfirmForAdd(parsed, prefillDate){
-  confirmState={mode:"add", type:parsed.type, title:parsed.title, date:prefillDate||parsed.date, importance:"عادي", note:"", focusTitle:false};
+  confirmState={mode:"add", type:parsed.type, title:parsed.title, date:prefillDate||parsed.date, importance:"عادي", note:"", forWhom:"", focusTitle:false};
   renderConfirmPanel();
   scrollToConfirm();
 }
@@ -960,7 +1014,7 @@ function openConfirmForEditItem(id){
 function openConfirmForEditRequest(id){
   var r=state.requests.find(function(x){ return x.id===id; });
   if(!r) return;
-  confirmState={mode:"edit", id:id, kind:"request", type:"طلب", title:r.text, date:null, importance:r.importance||"عادي", note:r.note||""};
+  confirmState={mode:"edit", id:id, kind:"request", type:"طلب", title:r.text, date:null, importance:r.importance||"عادي", note:r.note||"", forWhom:r.forWhom||""};
   renderConfirmPanel();
   scrollToConfirm();
 }
@@ -986,11 +1040,13 @@ function saveConfirm(){
   var titleEl=document.getElementById("confirmTitle");
   var dateEl=document.getElementById("confirmDate");
   var noteEl=document.getElementById("confirmNote");
+  var forWhomEl=document.getElementById("confirmForWhom");
   var title=(titleEl?titleEl.value:confirmState.title).trim();
   if(!title){ showToast("اكتب عنوانًا قبل الحفظ"); return; }
   var type=confirmState.type;
   var importance=confirmState.importance||"عادي";
   var note=noteEl?noteEl.value.trim():(confirmState.note||"");
+  var forWhom=forWhomEl?forWhomEl.value.trim():(confirmState.forWhom||"");
   var date=dateEl?dateEl.value:confirmState.date;
   if(!date) date=toISO(today);
 
@@ -1001,9 +1057,9 @@ function saveConfirm(){
     });
   }else if(type==="طلب"){
     if(confirmState.mode==="edit" && confirmState.id){
-      p=updateRequest(confirmState.id,{text:title, importance:importance, note:note}).then(function(){ showToast("تم تحديث الطلب"); });
+      p=updateRequest(confirmState.id,{text:title, importance:importance, note:note, forWhom:forWhom}).then(function(){ showToast("تم تحديث الطلب"); });
     }else{
-      p=addRequest(title,{importance:importance, note:note}).then(function(){ showToast("تمت إضافة الطلب"); });
+      p=addRequest(title,{importance:importance, note:note, forWhom:forWhom}).then(function(){ showToast("تمت إضافة الطلب"); });
     }
   }else{
     if(confirmState.mode==="edit" && confirmState.id){
