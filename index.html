@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دارنا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Markazi+Text:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style id="app-style">
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --ink:#22252a; --ink-soft:#5b6169; --ink-faint:#8d929b;
+  --bg:#fafbfa; --surface:#ffffff; --line:#e9ebe9;
+  --cell-bg:#f6f7f7;
+  --green-600:#3f6b3f; --green-700:#305430; --green-100:#eaf5ee;
+  --blue-100:#eaf2fb; --blue-ink:#3f6f92;
+  --sand-100:#faf5e9;
+  --lavender-100:#f3f0f9; --lavender-ink:#6c5a92;
+  --cream-100:#fdf8e3;
+  --gold:#a97d2a; --gold-bg:#f6ecd6;
+  --urgent:#b23b28; --urgent-bg:#faeae6;
+  --sky:#3f6f92; --sky-bg:#eaf2f8;
+  --btn-bg:#3f6b3f; --btn-text:#fbfaf4;
+  --shadow:0 1px 2px rgba(20,20,20,.03);
+  --radius-lg:18px; --radius-md:13px; --radius-sm:10px;
+  --focus:#3f6b3f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#eae7da; --ink-soft:#b6b4a6; --ink-faint:#82877a;
+    --bg:#15180f; --surface:#1d2117; --line:#2f3427;
+    --cell-bg:#20241a;
+    --green-600:#8fc478; --green-700:#a3d38d; --green-100:#212a1b;
+    --blue-100:#1a222a; --blue-ink:#8bb6d6;
+    --sand-100:#241f16;
+    --lavender-100:#211d29; --lavender-ink:#b6a2dc;
+    --cream-100:#2c2712;
+    --gold:#dcae5f; --gold-bg:#2c2410;
+    --urgent:#e0796a; --urgent-bg:#31201b;
+    --sky:#8bb6d6; --sky-bg:#1a2530;
+    --btn-bg:#7fb166; --btn-text:#12160d;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 24px -16px rgba(0,0,0,.5);
+    --focus:#8fc478;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#eae7da; --ink-soft:#b6b4a6; --ink-faint:#82877a;
+  --bg:#15180f; --surface:#1d2117; --line:#2f3427;
+  --cell-bg:#20241a;
+  --green-600:#8fc478; --green-700:#a3d38d; --green-100:#212a1b;
+  --blue-100:#1a222a; --blue-ink:#8bb6d6;
+  --sand-100:#241f16;
+  --lavender-100:#211d29; --lavender-ink:#b6a2dc;
+  --cream-100:#2c2712;
+  --gold:#dcae5f; --gold-bg:#2c2410;
+  --urgent:#e0796a; --urgent-bg:#31201b;
+  --sky:#8bb6d6; --sky-bg:#1a2530;
+  --btn-bg:#7fb166; --btn-text:#12160d;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 24px -16px rgba(0,0,0,.5);
+  --focus:#8fc478;
+}
+html,body{background:var(--bg);}
+body{
+  margin:0; color:var(--ink); background:var(--bg);
+  font-family:"IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  font-size:15.5px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:96px;
+}
+.wordmark{font-family:"Markazi Text","IBM Plex Sans Arabic",serif; font-weight:700;}
+button{font-family:inherit; cursor:pointer;}
+input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
+:focus-visible{outline:2.5px solid var(--focus); outline-offset:2px; border-radius:6px;}
+.icon{width:1em; height:1em; display:inline-block; vertical-align:-0.15em;}
+.icon svg{width:100%; height:100%;}
+.shell{max-width:1180px; margin:0 auto; padding:0 16px;}
+
+/* header */
+.topbar{position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; flex-wrap:wrap;}
+.brand{display:flex; flex-direction:column; gap:1px;}
+.brand-name{font-size:26px; color:var(--green-600); line-height:1;}
+.brand-sub{font-size:12.5px; color:var(--ink-faint);}
+.topbar-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.sync-badge{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-faint); padding:6px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--line); white-space:nowrap;}
+.sync-dot{width:7px; height:7px; border-radius:50%; background:var(--ink-faint); flex:none;}
+.sync-badge.on .sync-dot{background:var(--green-600);}
+.sync-badge.off .sync-dot{background:var(--gold);}
+.admin-toggle{display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--ink-soft); padding:6px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--line); white-space:nowrap;}
+.admin-toggle .icon{width:13px; height:13px;}
+.admin-toggle.on{background:var(--green-600); color:var(--btn-text); border-color:var(--green-600);}
+.today-line{padding:2px 16px 12px; font-size:13px; color:var(--ink-soft);}
+
+/* identity banner */
+.identity-banner{display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 16px; margin:0 auto 10px; max-width:1180px; background:var(--lavender-100); border-radius:var(--radius-md); font-size:13.5px;}
+.identity-banner input{flex:1; min-width:120px; border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:8px 12px; font-size:13.5px;}
+
+/* search */
+.searchbar-wrap{padding:0 16px 12px;}
+.searchbar{max-width:1180px; margin:0 auto; display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:10px 16px;}
+.searchbar .icon{color:var(--ink-faint); flex:none;}
+.searchbar input{flex:1; border:none; background:transparent; font-size:14.5px; outline:none;}
+.search-clear{border:none; background:var(--cell-bg); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); flex:none;}
+.search-clear .icon{width:13px; height:13px;}
+#searchResults{max-width:1180px; margin:0 auto; padding:0 16px 14px;}
+#searchResults:empty{display:none;}
+
+/* quick add */
+.quickadd-wrap{padding:4px 16px 12px;}
+.quickadd-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:14px; max-width:1180px; margin:0 auto;}
+.quickadd-label{font-size:13px; color:var(--ink-soft); margin:0 2px 8px; font-weight:600;}
+.quickadd-row{display:flex; gap:8px;}
+.quickadd-row input{flex:1; border:1.5px solid var(--line); background:var(--cell-bg); border-radius:var(--radius-md); padding:13px 16px; font-size:15.5px; color:var(--ink);}
+.quickadd-row input::placeholder{color:var(--ink-faint);}
+.quickadd-row input:focus{border-color:var(--green-600); background:var(--surface);}
+.btn{border:none; border-radius:var(--radius-md); padding:13px 20px; font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:6px; justify-content:center;}
+.btn-primary{background:var(--btn-bg); color:var(--btn-text);}
+.btn-primary:hover{background:var(--green-700);}
+.btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line);}
+.btn-ghost:hover{background:var(--cell-bg);}
+.btn-sm{padding:8px 14px; font-size:13.5px; border-radius:10px;}
+.quickadd-hint{margin:8px 2px 0; font-size:12px; color:var(--ink-faint);}
+
+/* family box */
+.familybox-wrap{padding:0 16px 14px;}
+.card--familybox{background:var(--lavender-100); border-color:var(--line); max-width:1180px; margin:0 auto;}
+.familybox-hint{margin:0 0 10px; font-size:12.5px; color:var(--ink-soft);}
+.familybox-form{display:flex; gap:8px; flex-wrap:wrap;}
+.familybox-form input{border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-md); padding:11px 14px; font-size:14.5px;}
+.familybox-form input#familyboxName{flex:0 0 130px;}
+.familybox-form input#familyboxText{flex:1; min-width:160px;}
+.familybox-form .btn{flex:none;}
+
+/* confirm panel */
+.confirm-panel{padding:0 16px 14px;}
+.confirm-panel.hidden{display:none;}
+.confirm-card{max-width:1180px; margin:0 auto; background:var(--surface); border:1.5px dashed var(--green-600); border-radius:var(--radius-lg); padding:16px;}
+.confirm-title{font-size:13px; font-weight:700; color:var(--green-600); margin:0 0 10px;}
+.confirm-subtitle{font-size:12px; font-weight:700; color:var(--ink-soft); margin:2px 0 8px;}
+.confirm-sender{font-size:12.5px; color:var(--ink-soft); margin:0 0 10px; background:var(--lavender-100); display:inline-block; padding:4px 10px; border-radius:999px;}
+.type-chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+.type-chip{border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:8px 16px; font-size:14px; font-weight:600;}
+.type-chip.active{background:var(--green-600); border-color:var(--green-600); color:var(--btn-text);}
+.type-chip.small{padding:6px 12px; font-size:12.5px;}
+.confirm-fields{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.confirm-fields .field{flex:1; min-width:180px;}
+.confirm-fields label{display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; font-weight:600;}
+.confirm-fields input[type="text"], .confirm-fields input[type="date"]{width:100%; border:1.5px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:10px 12px; font-size:14.5px;}
+.confirm-actions{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
+.confirm-danger{margin-inline-end:auto;}
+.btn-danger{background:transparent; color:var(--urgent); border:1.5px solid var(--urgent-bg);}
+.btn-danger:hover{background:var(--urgent-bg);}
+
+/* upcoming strip */
+.upcoming-strip{padding:2px 16px 14px;}
+.upcoming-strip .shell{display:flex; gap:10px; overflow-x:auto; padding-bottom:2px; scrollbar-width:thin;}
+.upcoming-chip{flex:none; display:flex; align-items:center; gap:9px; background:var(--sand-100); border:1px solid var(--line); border-radius:999px; padding:9px 16px 9px 12px; font-size:13.5px; white-space:nowrap;}
+.upcoming-chip .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+.upcoming-chip b{font-weight:700; color:var(--ink);}
+.upcoming-chip span{color:var(--ink-soft);}
+.upcoming-empty{color:var(--ink-faint); font-size:13.5px; padding:6px 4px;}
+
+/* stat tiles: this week / urgent-now */
+.stats-row{display:grid; grid-template-columns:1fr; gap:12px; max-width:1180px; margin:0 auto; padding:0 16px 14px;}
+@media (min-width:640px){ .stats-row{grid-template-columns:1fr 1fr;} }
+.stat-tile{padding:14px 16px;}
+.card--thisweek{background:var(--sand-100);}
+.card--urgent{background:var(--cream-100);}
+.stat-title{margin:0 0 6px; font-size:13px; font-weight:700; color:var(--ink);}
+.stat-line{margin:0; font-size:13px; color:var(--ink-soft);}
+.row-mini{font-size:13px; padding:5px 0; border-bottom:1px dashed var(--line);}
+.row-mini:last-child{border-bottom:none;}
+
+/* pending approval */
+.pending-wrap{padding:0 16px 14px;}
+.card--pending{background:var(--surface); border:1.5px dashed var(--green-600); max-width:1180px; margin:0 auto;}
+.pending-actions{flex-wrap:wrap; gap:6px;}
+
+/* layout */
+.layout{max-width:1180px; margin:0 auto; padding:0 16px 24px; display:grid; grid-template-columns:1fr; gap:16px;}
+@media (min-width:960px){
+  .layout{grid-template-columns:280px 1fr 300px; align-items:start;}
+  .layout .calendar-col{order:2;}
+  .layout .requests-col{order:1;}
+  .layout .reminders-col{order:3;}
+}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:18px;}
+.card--reminders{background:var(--green-100);}
+.card--requests{background:var(--blue-100);}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.card-title{font-size:16px; font-weight:700; margin:0; display:flex; align-items:center; gap:8px;}
+.card-title .icon{color:var(--green-600);}
+.card-count{font-size:12px; color:var(--ink-faint); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:2px 9px;}
+.empty-note{color:var(--ink-faint); font-size:13.5px; padding:10px 2px;}
+
+/* calendar */
+.cal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.cal-nav-btn{width:34px; height:34px; border-radius:50%; border:1.5px solid var(--line); background:var(--cell-bg); color:var(--ink); font-size:18px; display:flex; align-items:center; justify-content:center;}
+.cal-nav-btn:hover{background:var(--green-100);}
+.cal-month-title{font-family:"Markazi Text",serif; font-weight:700; font-size:24px; color:var(--green-600);}
+.cal-weekdays{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:6px;}
+.cal-weekdays span{text-align:center; font-size:11.5px; color:var(--ink-faint); font-weight:600;}
+.cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+.cal-cell{background:transparent; border:1px solid transparent; border-radius:12px; min-height:64px; padding:5px; display:flex; flex-direction:column; align-items:stretch; gap:2px; text-align:right; color:var(--ink); overflow:hidden;}
+.cal-cell.empty{visibility:hidden;}
+.cal-cell:not(.empty){border-color:var(--line); background:var(--cell-bg);}
+.cal-cell:not(.empty):hover{border-color:var(--green-600);}
+.cal-cell.today{border-color:var(--green-600); background:var(--green-100);}
+.cal-daynum{font-size:12.5px; font-weight:700; color:var(--ink-soft); align-self:flex-start;}
+.cal-cell.today .cal-daynum{color:var(--green-600);}
+.cal-chip{font-size:10.5px; border-radius:6px; padding:2px 5px; background:var(--green-100); color:var(--green-600); text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.cal-chip.k-appt{background:var(--sky-bg); color:var(--sky);}
+.cal-chip.k-urgent{background:var(--urgent-bg); color:var(--urgent);}
+.cal-chip.k-warn{background:var(--gold-bg); color:var(--gold);}
+.cal-chip.k-gold{background:var(--sand-100); color:var(--ink-soft);}
+.cal-more{font-size:10px; color:var(--ink-faint); padding:0 5px;}
+@media (max-width:520px){
+  .cal-cell{min-height:50px; font-size:11px;}
+  .cal-chip{display:none;}
+  .cal-cell.has-items:not(.empty)::after{content:""; width:5px; height:5px; border-radius:50%; background:var(--green-600); align-self:center; margin-top:auto;}
+}
+
+/* lists */
+.list{display:flex; flex-direction:column; gap:8px;}
+.row{display:flex; align-items:flex-start; gap:10px; padding:11px 12px; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface);}
+.row.pending-row{flex-wrap:wrap;}
+.row.pending-row .row-actions{width:100%; margin-top:6px;}
+.row-main{flex:1; min-width:0;}
+.row-title{font-size:14.5px; font-weight:600; color:var(--ink); word-break:break-word;}
+.row-title.done{color:var(--ink-faint); text-decoration:line-through; font-weight:500;}
+.row-sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.row-meta{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
+.row-note{font-size:12px; color:var(--ink-soft); margin-top:2px; font-style:italic;}
+.row-badges{margin-top:4px;}
+.row-actions{display:flex; align-items:center; gap:6px; flex:none;}
+.icon-btn{width:32px; height:32px; border-radius:9px; border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--ink-soft); flex:none;}
+.icon-btn .icon{width:16px; height:16px;}
+.icon-btn:hover{background:var(--green-100); color:var(--green-600);}
+.pill{font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; white-space:nowrap;}
+.pill.urgent{background:var(--urgent-bg); color:var(--urgent);}
+.pill.warn{background:var(--gold-bg); color:var(--gold);}
+.pill.ok{background:var(--green-100); color:var(--green-600);}
+.pill.muted{background:var(--surface); color:var(--ink-faint); border:1px solid var(--line);}
+.req-title-input{width:100%; border:1.5px solid var(--green-600); border-radius:8px; padding:6px 9px; font-size:14.5px; background:var(--surface);}
+.status-btn{border:1.5px solid var(--green-600); color:var(--green-600); background:transparent; border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:700; white-space:nowrap;}
+.status-btn:hover{background:var(--green-100);}
+.status-btn.is-done{border-color:var(--line); color:var(--ink-faint); background:var(--surface);}
+.status-secondary{border:none; background:none; color:var(--ink-faint); font-size:12px; text-decoration:underline; padding:4px;}
+
+/* fab */
+.fab{position:fixed; inset-inline-end:20px; inset-block-end:24px; width:58px; height:58px; border-radius:50%; background:var(--btn-bg); color:var(--btn-text); border:none; box-shadow:0 10px 26px -6px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; font-size:26px; z-index:30;}
+.fab .icon{width:26px; height:26px;}
+.fab:hover{background:var(--green-700);}
+@media (max-width:640px){ .fab{inset-block-end:calc(20px + env(safe-area-inset-bottom));} }
+
+/* toast */
+.toast-host{position:fixed; inset-inline:0; bottom:20px; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:60; pointer-events:none; padding:0 16px;}
+.toast{pointer-events:auto; background:var(--ink); color:var(--bg); border-radius:12px; padding:11px 16px; display:flex; align-items:center; gap:12px; font-size:13.5px; box-shadow:0 10px 26px -8px rgba(0,0,0,.4); opacity:1; transform:translateY(0); transition:opacity .25s, transform .25s; max-width:92vw;}
+.toast.out{opacity:0; transform:translateY(8px);}
+.toast-action{background:none; border:none; color:var(--green-100); font-weight:700; font-size:13px; white-space:nowrap;}
+
+.foot-note{max-width:1180px; margin:8px auto 40px; padding:0 16px; font-size:12px; color:var(--ink-faint); text-align:center;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="app-script">
+(function(){
+"use strict";
+
+/* ---------- utilities ---------- */
+function pad(n){return String(n).padStart(2,"0");}
+function toISO(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function parseISO(s){var p=s.split("-").map(Number); return new Date(p[0],p[1]-1,p[2]);}
+function todayDate(){var t=new Date(); t.setHours(0,0,0,0); return t;}
+function daysBetween(a,b){return Math.round((b-a)/86400000);}
+function escapeHtml(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function uid(){return "i"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function normalizeDigits(s){var map={"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"}; return s.replace(/[٠-٩]/g,function(d){return map[d];});}
+
+var WEEKDAYS_SHORT=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+var MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+function fmtHumanDate(iso){
+  var d=parseISO(iso);
+  return d.getDate()+" "+MONTHS[d.getMonth()];
+}
+function fmtRelative(iso){
+  var d=parseISO(iso), t=todayDate();
+  var diff=daysBetween(t,d);
+  if(diff===0) return "اليوم";
+  if(diff===1) return "غدًا";
+  if(diff===-1) return "أمس";
+  if(diff>1) return "بعد "+diff+" يوم";
+  return "متأخر "+Math.abs(diff)+" يوم";
+}
+function urgencyTier(iso){
+  var diff=daysBetween(todayDate(), parseISO(iso));
+  if(diff<0) return "urgent";
+  if(diff<=3) return "urgent";
+  if(diff<=7) return "warn";
+  return "ok";
+}
+function importanceBadge(imp){
+  if(imp==="عاجل") return '<span class="pill urgent">عاجل</span>';
+  if(imp==="مهم") return '<span class="pill warn">مهم</span>';
+  return "";
+}
+
+/* ---------- icons ---------- */
+var ICON={
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
+  pencil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5.2 3.6 9.4 8 11 4.4-1.6 8-5.8 8-11V5l-8-3z"/></svg>'
+};
+function icon(name){return '<span class="icon">'+ICON[name]+'</span>';}
+
+/* ---------- Supabase client (shared family database) ---------- */
+var SUPABASE_URL="https://puxvfngwbgoqxqaphayv.supabase.co";
+var SUPABASE_ANON_KEY="sb_publishable_Fu-_Lf8TlAf3bjynAHr7Ug_uwLbO2Jq";
+var ADMIN_EMAIL="n.albarqan.ai@gmail.com";
+var sb=(typeof window!=="undefined" && window.supabase && typeof window.supabase.createClient==="function")
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+var state={items:[],requests:[],submissions:[]};
+
+function getDisplayName(){ try{ return localStorage.getItem("darna_display_name")||""; }catch(e){ return ""; } }
+function setDisplayName(n){ try{ localStorage.setItem("darna_display_name", n); }catch(e){} }
+
+/* ---------- row <-> app-state mapping (Supabase columns are snake_case) ---------- */
+function rowToItem(row){ return {id:row.id, title:row.title, date:row.date, type:row.type, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", addedAt:row.created_at}; }
+function rowToRequest(row){ return {id:row.id, text:row.text, status:row.status, note:row.note||"", importance:row.importance||"عادي", addedBy:row.added_by||"", addedAt:row.created_at}; }
+function rowToSubmission(row){ return {id:row.id, senderName:row.sender_name, text:row.text, suggestedType:row.suggested_type, suggestedDate:row.suggested_date, status:row.status, source:row.source, createdAt:row.created_at}; }
+
+/* ---------- remote data loading ---------- */
+function loadDashboard(){
+  if(!sb) return Promise.resolve();
+  return Promise.all([
+    sb.from("items").select("*").order("date",{ascending:true}),
+    sb.from("requests").select("*").order("created_at",{ascending:false})
+  ]).then(function(res){
+    var itemsRes=res[0], reqRes=res[1];
+    if(itemsRes.error || reqRes.error){ dbStatus="error"; return; }
+    state.items=(itemsRes.data||[]).map(rowToItem);
+    state.requests=(reqRes.data||[]).map(rowToRequest);
+    dbStatus="ok";
+  }, function(){ dbStatus="error"; });
+}
+function loadPending(){
+  if(!sb || !isAdmin){ state.submissions=[]; return Promise.resolve(); }
+  return sb.from("family_submissions").select("*").eq("status","pending").order("created_at",{ascending:true}).then(function(res){
+    if(res.error){ return; }
+    state.submissions=(res.data||[]).map(rowToSubmission);
+  });
+}
+
+/* ---------- admin auth (Supabase Auth Magic Link) ---------- */
+var session=null;
+var isAdmin=false;
+var dbStatus="loading"; /* loading | ok | error */
+var showAdminLogin=false;
+
+function refreshAuthState(){
+  if(!sb) return Promise.resolve();
+  return sb.auth.getSession().then(function(res){
+    session=res.data && res.data.session;
+    isAdmin=!!(session && session.user && session.user.email===ADMIN_EMAIL);
+  });
+}
+function requestMagicLink(email){
+  return sb.auth.signInWithOtp({ email: email, options:{ emailRedirectTo: window.location.origin+window.location.pathname } });
+}
+function signOutAdmin(){
+  return sb.auth.signOut();
+}
+
+/* ---------- quick-add parsing ---------- */
+var REQUEST_KW=["جيب","هات","اشتري","إشتري","احجز","إحجز","اطلب","إطلب","ابغى","أبغى","نبغى","نحتاج","تحتاج له","دلوني على"];
+var EVENT_KW={
+  "مناسبة":["ميلاد","عيد ميلاد","زواج","خطوبة","حفل","مناسبة","اليوم الوطني"],
+  "موعد":["موعد","دكتور","طبيب","مستشفى","عيادة","كشف","فحص"],
+  "تذكير":["ينتهي","تنتهي","ينهي","خلص","يخلص","باقي","تجديد","ينزل"]
+};
+function detectType(text){
+  var i,k;
+  for(i=0;i<REQUEST_KW.length;i++){ if(text.indexOf(REQUEST_KW[i])>-1) return "طلب"; }
+  var types=["مناسبة","موعد","تذكير"];
+  for(i=0;i<types.length;i++){
+    var kws=EVENT_KW[types[i]];
+    for(k=0;k<kws.length;k++){ if(text.indexOf(kws[k])>-1) return types[i]; }
+  }
+  return "مناسبة";
+}
+function parseDateFromText(text){
+  var today=todayDate();
+  var m;
+  if(/اليوم/.test(text)) return {date:toISO(today), match:"اليوم"};
+  m=text.match(/بكرة|غدا|غدًا/);
+  if(m){ var d1=new Date(today); d1.setDate(d1.getDate()+1); return {date:toISO(d1), match:m[0]}; }
+  m=text.match(/بعد\s*(\d+)\s*(يوم|أيام)/);
+  if(m){ var d2=new Date(today); d2.setDate(d2.getDate()+parseInt(m[1],10)); return {date:toISO(d2), match:m[0]}; }
+  m=text.match(/بعد\s*أسبوعين/);
+  if(m){ var d3=new Date(today); d3.setDate(d3.getDate()+14); return {date:toISO(d3), match:m[0]}; }
+  m=text.match(/بعد\s*أسبوع/);
+  if(m){ var d4=new Date(today); d4.setDate(d4.getDate()+7); return {date:toISO(d4), match:m[0]}; }
+  m=text.match(/بعد\s*شهر/);
+  if(m){ var d5=new Date(today); d5.setMonth(d5.getMonth()+1); return {date:toISO(d5), match:m[0]}; }
+  var monthPattern=MONTHS.join("|")+"|إبريل";
+  m=text.match(new RegExp("(\\d{1,2})\\s*("+monthPattern+")(?:\\s+(\\d{4}))?"));
+  if(m){
+    var day=parseInt(m[1],10);
+    var monthIdx=MONTHS.indexOf(m[2]);
+    if(monthIdx<0 && m[2]==="إبريل") monthIdx=3;
+    var year=m[3]?parseInt(m[3],10):today.getFullYear();
+    if(!m[3]){
+      var guess=new Date(year,monthIdx,day);
+      if(daysBetween(today,guess) < -20) year+=1;
+    }
+    var dd=new Date(year,monthIdx,day);
+    return {date:toISO(dd), match:m[0]};
+  }
+  return {date:toISO(today), match:null};
+}
+function parseQuickAdd(raw){
+  var text=normalizeDigits(raw.trim());
+  var type=detectType(text);
+  if(type==="طلب"){ return {type:type, title:text, date:null}; }
+  var parsed=parseDateFromText(text);
+  var title=text;
+  if(parsed.match){ title=text.replace(parsed.match,"").replace(/\s{2,}/g," ").trim(); }
+  if(!title) title=text;
+  return {type:type, title:title, date:parsed.date};
+}
+
+/* ---------- toasts ---------- */
+function showToast(msg, actionLabel, actionFn, duration){
+  duration=duration||4200;
+  var host=document.getElementById("toastHost");
+  if(!host) return;
+  var el=document.createElement("div");
+  el.className="toast";
+  var span=document.createElement("span");
+  span.textContent=msg;
+  el.appendChild(span);
+  if(actionLabel && actionFn){
+    var btn=document.createElement("button");
+    btn.type="button"; btn.className="toast-action"; btn.textContent=actionLabel;
+    btn.addEventListener("click",function(){ actionFn(); el.remove(); });
+    el.appendChild(btn);
+  }
+  host.appendChild(el);
+  setTimeout(function(){ el.classList.add("out"); setTimeout(function(){ el.remove(); },300); }, duration);
+}
+
+/* ---------- render state (ui-only) ---------- */
+var today=todayDate();
+var viewYear=today.getFullYear(), viewMonth=today.getMonth();
+var confirmState=null; /* {mode:'add'|'edit'|'approve-submission', id, kind, type, title, date, importance, note, senderName} */
+var editingRequestId=null;
+var searchQuery="";
+
+/* ---------- render ---------- */
+function syncLabel(){
+  if(dbStatus==="loading") return "جارٍ التحميل…";
+  if(dbStatus==="error") return "تعذّر الاتصال بقاعدة البيانات";
+  return "متصل بقاعدة بيانات العائلة";
+}
+function renderHeader(){
+  var adminBtn = isAdmin
+    ? '<button type="button" class="admin-toggle on" data-action="admin-logout">'+icon("shield")+' المدير: '+escapeHtml(session.user.email)+' — خروج</button>'
+    : '<button type="button" class="admin-toggle" data-action="admin-login-toggle">'+icon("shield")+' دخول المدير</button>';
+  var badgeClass = dbStatus==="ok" ? "on" : (dbStatus==="error" ? "off" : "");
+  return '<header class="topbar"><div class="topbar-inner shell">'+
+    '<div class="brand"><span class="brand-name wordmark">دارنا</span><span class="brand-sub">لوحة العائلة</span></div>'+
+    '<div class="topbar-actions">'+
+      adminBtn+
+      '<div class="sync-badge '+badgeClass+'" id="syncBadge"><span class="sync-dot"></span><span class="sync-label">'+syncLabel()+'</span></div>'+
+    '</div>'+
+    '</div>'+
+    '<div class="today-line shell">'+todayLabel()+'</div>'+
+    '</header>';
+}
+function todayLabel(){
+  var days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  return days[today.getDay()]+"، "+today.getDate()+" "+MONTHS[today.getMonth()]+" "+today.getFullYear();
+}
+
+function renderAdminLoginBanner(){
+  return '<div class="identity-banner"><span>بريد المدير:</span><input type="email" id="adminEmailInput" placeholder="بريدك الإلكتروني" value="'+escapeHtml(ADMIN_EMAIL)+'">'+
+    '<button type="button" class="btn btn-primary btn-sm" data-action="admin-login-send">إرسال رابط الدخول</button>'+
+    '<button type="button" class="btn btn-ghost btn-sm" data-action="admin-login-cancel">إلغاء</button></div>';
+}
+
+function renderIdentityBanner(){
+  if(getDisplayName()) return "";
+  return '<div class="identity-banner"><span>قبل ما تضيف شي، وش اسمك؟</span><input type="text" id="identityInput" placeholder="اسمك"><button type="button" class="btn btn-primary btn-sm" data-action="save-identity">تم</button></div>';
+}
+
+function renderSearchBar(){
+  return '<div class="searchbar-wrap"><div class="searchbar">'+icon("search")+
+    '<input type="text" id="searchInput" placeholder="ابحث أو اسأل عن أي شيء بالعائلة... مثال: تأمين" value="'+escapeHtml(searchQuery)+'">'+
+    '<button type="button" class="search-clear" id="searchClearBtn" data-action="clear-search" aria-label="مسح البحث" style="'+(searchQuery?"":"display:none;")+'">'+icon("close")+'</button>'+
+    '</div></div><div id="searchResults"></div>';
+}
+function renderSearchResultsHtml(query){
+  var q=query.trim();
+  if(!q) return "";
+  var matches=[];
+  state.items.forEach(function(it){
+    if((it.title+" "+(it.note||"")).indexOf(q)>-1){ matches.push({kind:"item", data:it}); }
+  });
+  state.requests.forEach(function(r){
+    if((r.text+" "+(r.note||"")).indexOf(q)>-1){ matches.push({kind:"request", data:r}); }
+  });
+  if(!matches.length){
+    return '<div class="card"><div class="empty-note">ما فيه نتائج لـ"'+escapeHtml(q)+'"</div></div>';
+  }
+  var rows=matches.map(function(m){
+    if(m.kind==="item"){
+      var it=m.data;
+      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0"><div class="row-main"><div class="row-title">'+escapeHtml(it.title)+'</div><div class="row-sub">'+escapeHtml(it.type)+' · '+fmtHumanDate(it.date)+'</div></div></div>';
+    }
+    var r=m.data;
+    return '<div class="row"><div class="row-main"><div class="row-title">'+escapeHtml(r.text)+'</div><div class="row-sub">طلب · '+escapeHtml(r.status)+'</div></div></div>';
+  }).join("");
+  return '<div class="card"><div class="card-head"><h3 class="card-title">نتائج البحث</h3><span class="card-count">'+matches.length+'</span></div><div class="list">'+rows+'</div></div>';
+}
+function updateSearchUI(){
+  var results=document.getElementById("searchResults");
+  var dash=document.getElementById("dashboardSections");
+  var clearBtn=document.getElementById("searchClearBtn");
+  if(results) results.innerHTML=renderSearchResultsHtml(searchQuery);
+  if(dash) dash.style.display=searchQuery.trim()?"none":"";
+  if(clearBtn) clearBtn.style.display=searchQuery?"":"none";
+}
+
+function renderQuickAdd(){
+  return '<div class="quickadd-wrap"><div class="quickadd-card">'+
+    '<p class="quickadd-label">وش تبي تضيف للعائلة؟</p>'+
+    '<form id="quickaddForm" class="quickadd-row">'+
+      '<input id="quickaddInput" type="text" autocomplete="off" placeholder="مثال: علاج الوالد ينتهي 15 سبتمبر — أو: ناصر جيب عشاء">'+
+      '<button type="submit" class="btn btn-primary">إضافة</button>'+
+    '</form>'+
+    '<p class="quickadd-hint">يُضاف مباشرة للوحة العائلة (متاح للمدير).</p>'+
+    '</div></div>';
+}
+
+function renderFamilyBox(){
+  return '<div class="familybox-wrap"><div class="card card--familybox">'+
+    '<h3 class="card-title">'+icon("mail")+' صندوق العائلة</h3>'+
+    '<p class="familybox-hint">أي أحد بالعائلة يقدر يرسل اقتراح من هنا بدون تسجيل دخول، وتتم مراجعته قبل ما يظهر باللوحة.</p>'+
+    '<form id="familyboxForm" class="familybox-form">'+
+      '<input type="text" id="familyboxName" placeholder="اسمك" value="'+escapeHtml(getDisplayName())+'" required>'+
+      '<input type="text" id="familyboxText" placeholder="مثال: زواج خالد يوم 18 ديسمبر" required>'+
+      '<button type="submit" class="btn btn-primary">إرسال</button>'+
+    '</form>'+
+  '</div></div>';
+}
+
+function renderConfirmPanel(){
+  var el=document.getElementById("confirmPanel");
+  if(!el) return;
+  if(!confirmState){ el.classList.add("hidden"); el.innerHTML=""; return; }
+  el.classList.remove("hidden");
+  var types=["تذكير","طلب","مناسبة","موعد"];
+  var chips=types.map(function(t){
+    return '<button type="button" class="type-chip'+(confirmState.type===t?" active":"")+'" data-action="confirm-type" data-type="'+t+'">'+t+'</button>';
+  }).join("");
+  var imps=["عادي","مهم","عاجل"];
+  var impChips=imps.map(function(im){
+    return '<button type="button" class="type-chip small'+(confirmState.importance===im?" active":"")+'" data-action="confirm-importance" data-imp="'+im+'">'+im+'</button>';
+  }).join("");
+  var isRequest=confirmState.type==="طلب";
+  var dateField=isRequest?"":(
+    '<div class="field"><label for="confirmDate">التاريخ</label><input type="date" id="confirmDate" value="'+(confirmState.date||toISO(today))+'"></div>'
+  );
+  var senderNote = confirmState.mode==="approve-submission" ? '<p class="confirm-sender">من صندوق العائلة — أرسلها: '+escapeHtml(confirmState.senderName||"")+'</p>' : "";
+  var panelTitle = confirmState.mode==="approve-submission" ? "مراجعة الاقتراح قبل الاعتماد" : "تأكيد الإضافة";
+  var saveLabel = confirmState.mode==="approve-submission" ? "اعتماد" : "حفظ";
+  var actionBtn="";
+  if(confirmState.mode==="edit"){
+    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="confirm-delete">'+icon("trash")+' حذف</button>';
+  }else if(confirmState.mode==="approve-submission"){
+    actionBtn='<button type="button" class="btn btn-danger btn-sm confirm-danger" data-action="confirm-reject-submission">'+icon("close")+' رفض</button>';
+  }
+  el.innerHTML='<div class="confirm-card">'+
+    '<p class="confirm-title">'+panelTitle+'</p>'+
+    senderNote+
+    '<div class="type-chips">'+chips+'</div>'+
+    '<div class="confirm-fields">'+
+      '<div class="field"><label for="confirmTitle">'+(isRequest?"الطلب":"العنوان")+'</label><input type="text" id="confirmTitle" value="'+escapeHtml(confirmState.title)+'"></div>'+
+      dateField+
+    '</div>'+
+    '<p class="confirm-subtitle">درجة الأهمية</p>'+
+    '<div class="type-chips">'+impChips+'</div>'+
+    '<div class="confirm-fields">'+
+      '<div class="field"><label for="confirmNote">ملاحظة (اختياري)</label><input type="text" id="confirmNote" value="'+escapeHtml(confirmState.note||"")+'" placeholder="ملاحظة قصيرة..."></div>'+
+    '</div>'+
+    '<div class="confirm-actions">'+
+      actionBtn+
+      '<button type="button" class="btn btn-ghost btn-sm" data-action="confirm-cancel">إلغاء</button>'+
+      '<button type="button" class="btn btn-primary btn-sm" data-action="confirm-save">'+saveLabel+'</button>'+
+    '</div>'+
+  '</div>';
+  var ti=document.getElementById("confirmTitle");
+  if(ti && confirmState.focusTitle){ setTimeout(function(){ ti.focus(); ti.select&&ti.select(); },10); }
+}
+
+function upcomingItems(limit){
+  var t=todayDate();
+  return state.items.filter(function(it){ return daysBetween(t, parseISO(it.date))>=0; })
+    .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; })
+    .slice(0,limit||5);
+}
+
+function chipKind(it){
+  if(it.type==="موعد") return "appt";
+  if(it.type==="تذكير"){
+    var tier=urgencyTier(it.date);
+    if(tier==="urgent") return "urgent";
+    if(tier==="warn") return "warn";
+    return "ok";
+  }
+  return "gold";
+}
+
+function renderUpcomingStrip(){
+  var items=upcomingItems(5);
+  var inner;
+  if(!items.length){
+    inner='<div class="upcoming-empty">ما فيه شيء قادم حاليًا — أضف مناسبة أو تذكير من الأعلى.</div>';
+  }else{
+    inner=items.map(function(it){
+      var diff=daysBetween(todayDate(), parseISO(it.date));
+      var when= diff<=6 ? WEEKDAYS_SHORT[parseISO(it.date).getDay()] : fmtHumanDate(it.date);
+      var kind=chipKind(it);
+      var badge=importanceBadge(it.importance);
+      return '<div class="upcoming-chip" data-action="chip" data-id="'+it.id+'"><span class="dot k-'+kind+'" style="background:var(--'+dotColorVar(kind)+')"></span><b>'+escapeHtml(when)+'</b><span>— '+escapeHtml(it.title)+'</span>'+badge+'</div>';
+    }).join("");
+  }
+  return '<section class="upcoming-strip"><div class="shell">'+inner+'</div></section>';
+}
+function dotColorVar(kind){
+  if(kind==="urgent") return "urgent";
+  if(kind==="warn") return "gold";
+  if(kind==="appt") return "sky";
+  if(kind==="gold") return "green-600";
+  return "green-600";
+}
+
+function thisWeekStats(){
+  var t=todayDate();
+  var end=new Date(t); end.setDate(end.getDate()+6);
+  var endIso=toISO(end), tIso=toISO(t);
+  var events=state.items.filter(function(it){ return (it.type==="مناسبة"||it.type==="موعد") && it.date>=tIso && it.date<=endIso; }).length;
+  var openRequests=state.requests.filter(function(r){ return r.status!=="تم"; }).length;
+  var remindersDue=state.items.filter(function(it){ return it.type==="تذكير" && it.date>=tIso && it.date<=endIso; }).length;
+  return {events:events, requests:openRequests, reminders:remindersDue};
+}
+function urgentNowList(){
+  var remUrgent=state.items.filter(function(it){ return it.type==="تذكير" && urgencyTier(it.date)==="urgent"; });
+  var flaggedItems=state.items.filter(function(it){ return it.importance==="عاجل" && it.type!=="تذكير"; });
+  var flaggedReq=state.requests.filter(function(r){ return r.importance==="عاجل" && r.status!=="تم"; });
+  return remUrgent.concat(flaggedItems).concat(flaggedReq).slice(0,5);
+}
+function renderStatsRow(){
+  var stats=thisWeekStats();
+  var urgent=urgentNowList();
+  var urgentBody=urgent.length
+    ? '<div class="list compact">'+urgent.map(function(x){
+        var title=(x.text!==undefined)?x.text:x.title;
+        return '<div class="row-mini">'+escapeHtml(title)+'</div>';
+      }).join("")+'</div>'
+    : '<div class="empty-note">ولا شي عاجل حاليًا.</div>';
+  return '<div class="stats-row">'+
+    '<div class="card card--thisweek stat-tile"><h4 class="stat-title">هذا الأسبوع</h4><p class="stat-line">'+stats.events+' مناسبات · '+stats.requests+' طلبات مفتوحة · '+stats.reminders+' تذكير يحتاج إجراء</p></div>'+
+    '<div class="card card--urgent stat-tile"><h4 class="stat-title">الأمور العاجلة</h4>'+urgentBody+'</div>'+
+  '</div>';
+}
+
+function renderPendingCard(){
+  if(!isAdmin) return "";
+  var pend=state.submissions.filter(function(s){ return s.status==="pending"; })
+    .sort(function(a,b){ return (a.createdAt||"").localeCompare(b.createdAt||""); });
+  var body;
+  if(!pend.length){
+    body='<div class="empty-note">لا توجد اقتراحات بانتظار الاعتماد.</div>';
+  }else{
+    body='<div class="list">'+pend.map(function(s){
+      var typePill=s.suggestedType?('<span class="pill ok">'+escapeHtml(s.suggestedType)+'</span>'):"";
+      var datePill=s.suggestedDate?('<span class="pill muted">'+fmtHumanDate(s.suggestedDate)+'</span>'):"";
+      return '<div class="row pending-row">'+
+        '<div class="row-main">'+
+          '<div class="row-title">'+escapeHtml(s.text)+'</div>'+
+          '<div class="row-sub">أرسلها: '+escapeHtml(s.senderName)+' · '+fmtAddedAt(s.createdAt)+'</div>'+
+          '<div class="row-badges">'+typePill+' '+datePill+'</div>'+
+        '</div>'+
+        '<div class="row-actions pending-actions">'+
+          '<button type="button" class="btn btn-primary btn-sm" data-action="approve-submission" data-id="'+s.id+'">موافقة</button>'+
+          '<button type="button" class="btn btn-ghost btn-sm" data-action="edit-submission" data-id="'+s.id+'">تعديل</button>'+
+          '<button type="button" class="icon-btn" data-action="reject-submission" data-id="'+s.id+'" aria-label="رفض">'+icon("close")+'</button>'+
+        '</div>'+
+      '</div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="pending-wrap"><div class="card card--pending"><div class="card-head"><h3 class="card-title">'+icon("bell")+' بانتظار الاعتماد</h3><span class="card-count">'+pend.length+'</span></div>'+body+'</div></div>';
+}
+
+function renderCalendarCard(){
+  var first=new Date(viewYear,viewMonth,1);
+  var startDow=first.getDay();
+  var daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+  var todayIso=toISO(todayDate());
+  var cells="";
+  var i,d;
+  for(i=0;i<startDow;i++){ cells+='<div class="cal-cell empty"></div>'; }
+  for(d=1; d<=daysInMonth; d++){
+    var iso=viewYear+"-"+pad(viewMonth+1)+"-"+pad(d);
+    var dayItems=state.items.filter(function(it){ return it.date===iso; });
+    var isToday=iso===todayIso;
+    var chipsHtml=dayItems.slice(0,2).map(function(it){
+      return '<div class="cal-chip k-'+chipKind(it)+'" data-action="chip" data-id="'+it.id+'">'+escapeHtml(it.title)+'</div>';
+    }).join("");
+    var more=dayItems.length>2?'<div class="cal-more">+'+(dayItems.length-2)+'</div>':"";
+    cells+='<button type="button" class="cal-cell'+(isToday?" today":"")+(dayItems.length?" has-items":"")+'" data-action="day-cell" data-date="'+iso+'"><span class="cal-daynum">'+d+'</span>'+chipsHtml+more+'</button>';
+  }
+  var weekdaysHtml=WEEKDAYS_SHORT.map(function(w){ return "<span>"+w+"</span>"; }).join("");
+  return '<div class="card">'+
+    '<div class="cal-head">'+
+      '<button type="button" class="cal-nav-btn" data-action="next-month" aria-label="الشهر التالي">‹</button>'+
+      '<span class="cal-month-title">'+MONTHS[viewMonth]+' '+viewYear+'</span>'+
+      '<button type="button" class="cal-nav-btn" data-action="prev-month" aria-label="الشهر السابق">›</button>'+
+    '</div>'+
+    '<div class="cal-weekdays">'+weekdaysHtml+'</div>'+
+    '<div class="cal-grid">'+cells+'</div>'+
+  '</div>';
+}
+
+function renderRemindersCard(){
+  var items=state.items.filter(function(it){ return it.type==="تذكير"; })
+    .sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
+  var body;
+  if(!items.length){
+    body='<div class="empty-note">لا توجد تذكيرات حالياً.</div>';
+  }else{
+    body='<div class="list">'+items.map(function(it){
+      var tier=urgencyTier(it.date);
+      var pillClass=tier==="urgent"?"urgent":(tier==="warn"?"warn":"ok");
+      var badge=importanceBadge(it.importance);
+      var meta="";
+      if(it.addedBy){ meta+='<div class="row-meta">أضافها: '+escapeHtml(it.addedBy)+'</div>'; }
+      if(it.note){ meta+='<div class="row-note">'+escapeHtml(it.note)+'</div>'; }
+      return '<div class="row" data-action="chip" data-id="'+it.id+'" role="button" tabindex="0">'+
+        '<div class="row-main"><div class="row-title">'+escapeHtml(it.title)+'</div>'+(badge?'<div class="row-badges">'+badge+'</div>':'')+'<div class="row-sub">'+fmtHumanDate(it.date)+'</div>'+meta+'</div>'+
+        '<span class="pill '+pillClass+'">'+escapeHtml(fmtRelative(it.date))+'</span>'+
+      '</div>';
+    }).join("")+'</div>';
+  }
+  return '<div class="card card--reminders"><div class="card-head"><h3 class="card-title">'+icon("bell")+' تذكيرات مهمة</h3><span class="card-count">'+items.length+'</span></div>'+body+'</div>';
+}
+
+function renderRequestsCard(){
+  var reqs=state.requests.slice().sort(function(a,b){
+    var order={"جديد":0,"جاري":1,"تم":2};
+    var oa=order[a.status]!=null?order[a.status]:0, ob=order[b.status]!=null?order[b.status]:0;
+    if(oa!==ob) return oa-ob;
+    return (b.addedAt||"").localeCompare(a.addedAt||"");
+  });
+  var body;
+  if(!reqs.length){
+    body='<div class="empty-note">لا توجد طلبات حالياً.</div>';
+  }else{
+    body='<div class="list">'+reqs.map(function(r){ return renderRequestRow(r, isAdmin); }).join("")+'</div>';
+  }
+  return '<div class="card card--requests"><div class="card-head"><h3 class="card-title">'+icon("list")+' أبرز الطلبات</h3><span class="card-count">'+reqs.length+'</span></div>'+body+'</div>';
+}
+function renderRequestRow(r, isAdminView){
+  var isDone=r.status==="تم";
+  var isEditing=isAdminView && editingRequestId===r.id;
+  var titleHtml;
+  if(isEditing){
+    titleHtml='<input type="text" class="req-title-input" id="reqEdit-'+r.id+'" data-action="request-edit-input" data-id="'+r.id+'" value="'+escapeHtml(r.text)+'">';
+  }else if(isAdminView){
+    titleHtml='<div class="row-title'+(isDone?" done":"")+'" data-action="request-edit-start" data-id="'+r.id+'" role="button" tabindex="0">'+escapeHtml(r.text)+'</div>';
+  }else{
+    titleHtml='<div class="row-title'+(isDone?" done":"")+'">'+escapeHtml(r.text)+'</div>';
+  }
+  var statusPill=isDone?'<span class="pill muted">تم</span>':(r.status==="جاري"?'<span class="pill warn">جاري</span>':'<span class="pill ok">جديد</span>');
+  var badge=importanceBadge(r.importance);
+  var secondaryBtn=(isAdminView && !isDone && r.status!=="جاري")
+    ? '<button type="button" class="status-secondary" data-action="mark-progress" data-id="'+r.id+'">بدء التنفيذ</button>' : "";
+  var meta="";
+  if(r.addedBy){ meta+='<div class="row-meta">أضافها: '+escapeHtml(r.addedBy)+'</div>'; }
+  if(r.note){ meta+='<div class="row-note">'+escapeHtml(r.note)+'</div>'; }
+  var actionsHtml="";
+  if(isAdminView){
+    var mainBtn=isDone
+      ? '<button type="button" class="status-btn is-done" data-action="toggle-done" data-id="'+r.id+'">↺ تراجع</button>'
+      : '<button type="button" class="status-btn" data-action="toggle-done" data-id="'+r.id+'">تم</button>';
+    actionsHtml='<div class="row-actions">'+mainBtn+'<button type="button" class="icon-btn" data-action="edit-request" data-id="'+r.id+'" aria-label="تعديل">'+icon("pencil")+'</button><button type="button" class="icon-btn" data-action="delete-request" data-id="'+r.id+'" aria-label="حذف">'+icon("trash")+'</button></div>';
+  }
+  return '<div class="row">'+
+    '<div class="row-main">'+titleHtml+(badge?'<div class="row-badges">'+badge+'</div>':'')+'<div class="row-sub">'+statusPill+' · '+fmtAddedAt(r.addedAt)+secondaryBtn+'</div>'+meta+'</div>'+
+    actionsHtml+
+  '</div>';
+}
+function fmtAddedAt(iso){
+  if(!iso) return "";
+  var d=new Date(iso); d.setHours(0,0,0,0);
+  var diff=daysBetween(d, todayDate());
+  if(diff<=0) return "اليوم";
+  if(diff===1) return "أمس";
+  return "قبل "+diff+" يوم";
+}
+
+function renderApp(){
+  var app=document.getElementById("app");
+  app.innerHTML=
+    renderHeader()+
+    (showAdminLogin && !isAdmin ? renderAdminLoginBanner() : '')+
+    renderIdentityBanner()+
+    renderSearchBar()+
+    '<div id="dashboardSections">'+
+      (isAdmin ? renderQuickAdd() : '')+
+      renderFamilyBox()+
+      '<div id="confirmPanel" class="confirm-panel hidden"></div>'+
+      renderUpcomingStrip()+
+      renderStatsRow()+
+      renderPendingCard()+
+      '<main class="layout">'+
+        '<aside class="col reminders-col">'+renderRemindersCard()+'</aside>'+
+        '<aside class="col requests-col">'+renderRequestsCard()+'</aside>'+
+        '<section class="col calendar-col">'+renderCalendarCard()+'</section>'+
+      '</main>'+
+    '</div>'+
+    '<button type="button" id="fabAdd" class="fab" aria-label="إضافة">'+icon("plus")+'</button>'+
+    '<p class="foot-note">دارنا · نسخة تجريبية أولى</p>'+
+    '<div id="toastHost" class="toast-host"></div>';
+  renderConfirmPanel();
+  updateSearchUI();
+}
+
+/* ---------- mutations (all read/write the shared Supabase database) ---------- */
+function addItem(type,title,date,opts){
+  opts=opts||{};
+  var row={title:title, date:date, type:type, note:opts.note||"", importance:opts.importance||"عادي", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
+  return sb.from("items").insert(row).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
+    var it=rowToItem(res.data);
+    state.items.push(it);
+    return it;
+  });
+}
+function updateItem(id,patch){
+  var row={};
+  if(patch.title!==undefined) row.title=patch.title;
+  if(patch.date!==undefined) row.date=patch.date;
+  if(patch.type!==undefined) row.type=patch.type;
+  if(patch.note!==undefined) row.note=patch.note;
+  if(patch.importance!==undefined) row.importance=patch.importance;
+  return sb.from("items").update(row).eq("id",id).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
+    var it=state.items.find(function(x){ return x.id===id; });
+    if(it) Object.assign(it, rowToItem(res.data));
+    return it;
+  });
+}
+function deleteItem(id){
+  var idx=state.items.findIndex(function(x){ return x.id===id; });
+  var removed = idx>=0 ? state.items[idx] : null;
+  return sb.from("items").delete().eq("id",id).then(function(res){
+    if(res.error){ showToast("تعذّر الحذف"); throw res.error; }
+    if(idx>=0) state.items.splice(idx,1);
+    return removed;
+  });
+}
+function addRequest(text,opts){
+  opts=opts||{};
+  var row={text:text, status:"جديد", note:opts.note||"", importance:opts.importance||"عادي", added_by:opts.addedBy!=null?opts.addedBy:(getDisplayName()||"")};
+  return sb.from("requests").insert(row).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر الحفظ — تأكد إنك مسجّل دخول كمدير"); throw res.error; }
+    var r=rowToRequest(res.data);
+    state.requests.push(r);
+    return r;
+  });
+}
+function updateRequest(id,patch){
+  var row={};
+  if(patch.text!==undefined) row.text=patch.text;
+  if(patch.status!==undefined) row.status=patch.status;
+  if(patch.note!==undefined) row.note=patch.note;
+  if(patch.importance!==undefined) row.importance=patch.importance;
+  return sb.from("requests").update(row).eq("id",id).select().single().then(function(res){
+    if(res.error){ showToast("تعذّر التحديث"); throw res.error; }
+    var r=state.requests.find(function(x){ return x.id===id; });
+    if(r) Object.assign(r, rowToRequest(res.data));
+    return r;
+  });
+}
+function deleteRequest(id){
+  var idx=state.requests.findIndex(function(x){ return x.id===id; });
+  var removed = idx>=0 ? state.requests[idx] : null;
+  return sb.from("requests").delete().eq("id",id).then(function(res){
+    if(res.error){ showToast("تعذّر الحذف"); throw res.error; }
+    if(idx>=0) state.requests.splice(idx,1);
+    return removed;
+  });
+}
+function addSubmission(senderName,text,suggestedType,suggestedDate){
+  var row={sender_name:senderName, text:text, suggested_type:suggestedType||null, suggested_date:suggestedDate||null, status:"pending", source:"dashboard"};
+  return sb.from("family_submissions").insert(row).then(function(res){
+    if(res.error){ showToast("تعذّر إرسال اقتراحك، حاول مرة ثانية"); throw res.error; }
+  });
+}
+function approveSubmission(id,type,title,date,importance,note){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  var senderName = s ? s.senderName : "";
+  var addPromise = (type==="طلب")
+    ? addRequest(title,{importance:importance,note:note,addedBy:senderName})
+    : addItem(type,title,date||toISO(today),{importance:importance,note:note,addedBy:senderName});
+  return addPromise.then(function(){
+    return sb.from("family_submissions").update({status:"approved"}).eq("id",id);
+  }).then(function(res){
+    if(res && res.error){ showToast("تمت الإضافة لكن تعذّر تحديث حالة الاقتراح"); }
+    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
+  });
+}
+function rejectSubmission(id){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  return sb.from("family_submissions").update({status:"rejected"}).eq("id",id).then(function(res){
+    if(res.error){ showToast("تعذّر الرفض"); throw res.error; }
+    state.submissions = state.submissions.filter(function(x){ return x.id!==id; });
+    return s;
+  });
+}
+
+/* ---------- confirm panel flow ---------- */
+function openConfirmForAdd(parsed, prefillDate){
+  confirmState={mode:"add", type:parsed.type, title:parsed.title, date:prefillDate||parsed.date, importance:"عادي", note:"", focusTitle:false};
+  renderConfirmPanel();
+  scrollToConfirm();
+}
+function openConfirmForEditItem(id){
+  var it=state.items.find(function(x){ return x.id===id; });
+  if(!it) return;
+  confirmState={mode:"edit", id:id, kind:"item", type:it.type, title:it.title, date:it.date, importance:it.importance||"عادي", note:it.note||""};
+  renderConfirmPanel();
+  scrollToConfirm();
+}
+function openConfirmForEditRequest(id){
+  var r=state.requests.find(function(x){ return x.id===id; });
+  if(!r) return;
+  confirmState={mode:"edit", id:id, kind:"request", type:"طلب", title:r.text, date:null, importance:r.importance||"عادي", note:r.note||""};
+  renderConfirmPanel();
+  scrollToConfirm();
+}
+function openConfirmForApproveSubmission(id){
+  var s=state.submissions.find(function(x){ return x.id===id; });
+  if(!s) return;
+  confirmState={mode:"approve-submission", id:id, type:s.suggestedType||"مناسبة", title:s.text, date:s.suggestedDate||toISO(today), importance:"عادي", note:"", senderName:s.senderName};
+  renderConfirmPanel();
+  scrollToConfirm();
+}
+function scrollToConfirm(){
+  setTimeout(function(){
+    var el=document.getElementById("confirmPanel");
+    if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+  },10);
+}
+function closeConfirm(){
+  confirmState=null;
+  renderConfirmPanel();
+}
+function saveConfirm(){
+  if(!confirmState) return;
+  var titleEl=document.getElementById("confirmTitle");
+  var dateEl=document.getElementById("confirmDate");
+  var noteEl=document.getElementById("confirmNote");
+  var title=(titleEl?titleEl.value:confirmState.title).trim();
+  if(!title){ showToast("اكتب عنوانًا قبل الحفظ"); return; }
+  var type=confirmState.type;
+  var importance=confirmState.importance||"عادي";
+  var note=noteEl?noteEl.value.trim():(confirmState.note||"");
+  var date=dateEl?dateEl.value:confirmState.date;
+  if(!date) date=toISO(today);
+
+  var p;
+  if(confirmState.mode==="approve-submission"){
+    p=approveSubmission(confirmState.id, type, title, type==="طلب"?null:date, importance, note).then(function(){
+      showToast("تم الاعتماد، وأضيفت للوحة");
+    });
+  }else if(type==="طلب"){
+    if(confirmState.mode==="edit" && confirmState.id){
+      p=updateRequest(confirmState.id,{text:title, importance:importance, note:note}).then(function(){ showToast("تم تحديث الطلب"); });
+    }else{
+      p=addRequest(title,{importance:importance, note:note}).then(function(){ showToast("تمت إضافة الطلب"); });
+    }
+  }else{
+    if(confirmState.mode==="edit" && confirmState.id){
+      p=updateItem(confirmState.id,{title:title,type:type,date:date, importance:importance, note:note}).then(function(){ showToast("تم تحديث "+type); });
+    }else{
+      p=addItem(type,title,date,{importance:importance, note:note}).then(function(){ showToast(type+" جديد أُضيف للتقويم"); });
+    }
+  }
+  p.then(function(){
+    closeConfirm();
+    renderApp();
+  }, function(){ /* the mutation already showed an error toast */ });
+}
+function deleteConfirmTarget(){
+  if(!confirmState || confirmState.mode!=="edit") return;
+  var isReq=confirmState.type==="طلب";
+  var delPromise = isReq ? deleteRequest(confirmState.id) : deleteItem(confirmState.id);
+  delPromise.then(function(removed){
+    closeConfirm();
+    renderApp();
+    if(removed){
+      showToast("تم الحذف","تراجع",function(){
+        if(isReq){ addRequest(removed.text,{importance:removed.importance, note:removed.note, addedBy:removed.addedBy}).then(renderApp); }
+        else { addItem(removed.type, removed.title, removed.date, {importance:removed.importance, note:removed.note, addedBy:removed.addedBy}).then(renderApp); }
+      });
+    }
+  }, function(){});
+}
+
+/* ---------- event delegation ---------- */
+function onAppClick(e){
+  var t=e.target.closest("[data-action]");
+  if(!t){
+    if(e.target && e.target.id==="fabAdd"){ /* handled below via id check */ }
+    return;
+  }
+  var action=t.dataset.action;
+  var id=t.dataset.id;
+  if(action==="chip"){
+    if(!isAdmin) return;
+    var it=state.items.find(function(x){ return x.id===id; });
+    if(it) openConfirmForEditItem(id);
+  }else if(action==="toggle-done"){
+    if(!isAdmin) return;
+    var r=state.requests.find(function(x){ return x.id===id; });
+    if(r){ updateRequest(id,{status: r.status==="تم"?"جديد":"تم"}).then(renderApp, function(){}); }
+  }else if(action==="mark-progress"){
+    if(!isAdmin) return;
+    updateRequest(id,{status:"جاري"}).then(renderApp, function(){});
+  }else if(action==="delete-request"){
+    if(!isAdmin) return;
+    deleteRequest(id).then(function(removedR){
+      renderApp();
+      if(removedR){ showToast("تم حذف الطلب","تراجع",function(){ addRequest(removedR.text,{importance:removedR.importance, note:removedR.note, addedBy:removedR.addedBy}).then(renderApp); }); }
+    }, function(){});
+  }else if(action==="edit-request"){
+    if(!isAdmin) return;
+    openConfirmForEditRequest(id);
+  }else if(action==="request-edit-start"){
+    if(!isAdmin) return;
+    editingRequestId=id;
+    renderApp();
+    var input=document.getElementById("reqEdit-"+id);
+    if(input){ input.focus(); input.select(); }
+  }else if(action==="next-month"){
+    viewMonth++; if(viewMonth>11){viewMonth=0; viewYear++;} renderApp();
+  }else if(action==="prev-month"){
+    viewMonth--; if(viewMonth<0){viewMonth=11; viewYear--;} renderApp();
+  }else if(action==="day-cell"){
+    if(!isAdmin) return;
+    var date=t.dataset.date;
+    openConfirmForAdd({type:"مناسبة", title:""}, date);
+    var ti=document.getElementById("confirmTitle");
+    if(ti){ ti.focus(); }
+  }else if(action==="confirm-type"){
+    if(confirmState){ confirmState.type=t.dataset.type; renderConfirmPanel(); }
+  }else if(action==="confirm-importance"){
+    if(confirmState){ confirmState.importance=t.dataset.imp; renderConfirmPanel(); }
+  }else if(action==="confirm-cancel"){
+    closeConfirm();
+  }else if(action==="confirm-save"){
+    saveConfirm();
+  }else if(action==="confirm-delete"){
+    deleteConfirmTarget();
+  }else if(action==="confirm-reject-submission"){
+    var pendingId=confirmState.id;
+    rejectSubmission(pendingId).then(function(removedSub){
+      closeConfirm();
+      renderApp();
+      if(removedSub){ showToast("تم الرفض","تراجع",function(){ sb.from("family_submissions").update({status:"pending"}).eq("id",pendingId).then(function(){ return loadPending(); }).then(renderApp); }); }
+    }, function(){});
+  }else if(action==="approve-submission"){
+    var s1=state.submissions.find(function(x){ return x.id===id; });
+    if(s1){ approveSubmission(id, s1.suggestedType||"مناسبة", s1.text, s1.suggestedDate, "عادي", "").then(function(){ renderApp(); showToast("تم الاعتماد، وأضيفت للوحة"); }, function(){}); }
+  }else if(action==="edit-submission"){
+    openConfirmForApproveSubmission(id);
+  }else if(action==="reject-submission"){
+    rejectSubmission(id).then(function(rs){
+      renderApp();
+      if(rs){ showToast("تم الرفض","تراجع",function(){ sb.from("family_submissions").update({status:"pending"}).eq("id",id).then(function(){ return loadPending(); }).then(renderApp); }); }
+    }, function(){});
+  }else if(action==="admin-login-toggle"){
+    showAdminLogin=!showAdminLogin;
+    renderApp();
+  }else if(action==="admin-login-cancel"){
+    showAdminLogin=false;
+    renderApp();
+  }else if(action==="admin-login-send"){
+    var emailInput=document.getElementById("adminEmailInput");
+    var email=emailInput?emailInput.value.trim():"";
+    if(!email){ showToast("اكتب بريدك الإلكتروني"); return; }
+    requestMagicLink(email).then(function(res){
+      if(res.error){ showToast("تعذّر إرسال الرابط، حاول مرة ثانية"); return; }
+      showAdminLogin=false;
+      renderApp();
+      showToast("تم إرسال رابط الدخول — افتحه من بريدك على نفس الجهاز");
+    });
+  }else if(action==="admin-logout"){
+    signOutAdmin().then(function(){ renderApp(); });
+  }else if(action==="save-identity"){
+    var nameInput=document.getElementById("identityInput");
+    var nm=nameInput?nameInput.value.trim():"";
+    if(nm){ setDisplayName(nm); renderApp(); }
+  }else if(action==="clear-search"){
+    searchQuery="";
+    var si=document.getElementById("searchInput");
+    if(si) si.value="";
+    updateSearchUI();
+  }
+  if(t.id==="fabAdd"){
+    var targetId = isAdmin ? "quickaddInput" : "familyboxText";
+    var qi=document.getElementById(targetId);
+    if(qi){ qi.scrollIntoView({behavior:"smooth", block:"center"}); qi.focus(); }
+  }
+}
+function onAppSubmit(e){
+  if(e.target && e.target.id==="quickaddForm"){
+    if(!isAdmin) return;
+    e.preventDefault();
+    var input=document.getElementById("quickaddInput");
+    var raw=input.value;
+    if(!raw || !raw.trim()) return;
+    var parsed=parseQuickAdd(raw);
+    input.value="";
+    openConfirmForAdd(parsed);
+  }else if(e.target && e.target.id==="familyboxForm"){
+    e.preventDefault();
+    var nameEl=document.getElementById("familyboxName");
+    var textEl=document.getElementById("familyboxText");
+    var name=nameEl.value.trim(), text=textEl.value.trim();
+    if(!name||!text) return;
+    setDisplayName(name);
+    var parsed2=parseQuickAdd(text);
+    var submitBtn=e.target.querySelector('button[type=submit]');
+    if(submitBtn) submitBtn.disabled=true;
+    addSubmission(name, text, parsed2.type, parsed2.type==="طلب"?null:parsed2.date).then(function(){
+      textEl.value="";
+      showToast("تم إرسالها للعائلة ✅");
+    }, function(){ /* error toast already shown */ }).then(function(){
+      if(submitBtn) submitBtn.disabled=false;
+    });
+  }
+}
+function onAppFocusOut(e){
+  var t=e.target;
+  if(t && t.dataset && t.dataset.action==="request-edit-input"){
+    if(!isAdmin) return;
+    var id=t.dataset.id;
+    var val=t.value.trim();
+    editingRequestId=null;
+    if(val){ updateRequest(id,{text:val}).then(renderApp, renderApp); } else { renderApp(); }
+  }
+}
+function onAppKeydown(e){
+  if(e.target && e.target.dataset && e.target.dataset.action==="request-edit-input"){
+    if(e.key==="Enter"){ e.preventDefault(); e.target.blur(); }
+    if(e.key==="Escape"){ editingRequestId=null; renderApp(); }
+  }
+}
+var searchDebounce=null;
+function onAppInput(e){
+  if(e.target && e.target.id==="searchInput"){
+    searchQuery=e.target.value;
+    clearTimeout(searchDebounce);
+    searchDebounce=setTimeout(updateSearchUI,120);
+  }
+}
+
+/* ---------- init ---------- */
+function init(){
+  var app=document.getElementById("app");
+  app.addEventListener("click", onAppClick);
+  app.addEventListener("submit", onAppSubmit);
+  app.addEventListener("focusout", onAppFocusOut);
+  app.addEventListener("keydown", onAppKeydown);
+  app.addEventListener("input", onAppInput);
+
+  renderApp();
+
+  if(!sb){
+    dbStatus="error";
+    renderApp();
+    return;
+  }
+
+  sb.auth.onAuthStateChange(function(_event, sess){
+    session=sess;
+    isAdmin=!!(session && session.user && session.user.email===ADMIN_EMAIL);
+    if(window.location.hash && window.location.hash.indexOf("access_token")>-1){
+      try{ history.replaceState(null, "", window.location.pathname+window.location.search); }catch(e){}
+    }
+    loadPending().then(renderApp);
+  });
+
+  refreshAuthState().then(function(){
+    return Promise.all([loadDashboard(), loadPending()]);
+  }).then(function(){
+    renderApp();
+  }, function(){
+    dbStatus="error";
+    renderApp();
+  });
+}
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded", init);
+}else{
+  init();
+}
+})();
+
+</script>
+</body>
+</html>
