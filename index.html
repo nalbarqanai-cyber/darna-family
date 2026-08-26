@@ -1035,9 +1035,15 @@ function deleteConfirmTarget(){
 
 /* ---------- event delegation ---------- */
 function onAppClick(e){
+  var fab=e.target.closest("#fabAdd");
+  if(fab){
+    var fabTargetId = isAdmin ? "quickaddInput" : "familyboxText";
+    var fabInput=document.getElementById(fabTargetId);
+    if(fabInput){ fabInput.scrollIntoView({behavior:"smooth", block:"center"}); fabInput.focus(); }
+    return;
+  }
   var t=e.target.closest("[data-action]");
   if(!t){
-    if(e.target && e.target.id==="fabAdd"){ /* handled below via id check */ }
     return;
   }
   var action=t.dataset.action;
@@ -1132,11 +1138,6 @@ function onAppClick(e){
     var si=document.getElementById("searchInput");
     if(si) si.value="";
     updateSearchUI();
-  }
-  if(t.id==="fabAdd"){
-    var targetId = isAdmin ? "quickaddInput" : "familyboxText";
-    var qi=document.getElementById(targetId);
-    if(qi){ qi.scrollIntoView({behavior:"smooth", block:"center"}); qi.focus(); }
   }
 }
 function onAppSubmit(e){
