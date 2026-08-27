@@ -338,6 +338,12 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
   body{overflow-x:hidden;}
   /* منع تكبير iOS التلقائي عند التركيز على أي حقل (سبب شائع لإحساس "الواجهة تصغّرت/ترزّحت") */
   input, select, textarea, button{font-size:16px;}
+  /* القاعدة العامة أعلاه لا تكفي وحدها: بعض حقول النماذج لها Selector أخص (class + attribute)
+     يتغلب عليها حسب قواعد CSS Specificity رغم وجودها هنا لاحقًا في الملف — لهذا نكررها هنا
+     بنفس درجة الخصوصية لضمان أن كل حقول الإدخال فعليًا تصير 16px على الجوال، بما فيها نماذج
+     الإضافة (معلومة/مرجع/موعد/تذكير...)، شريط البحث، وصندوق العائلة. */
+  .field-grid input[type=text],.field-grid input[type=date],.field-grid input[type=email],.field-grid input[type=tel],.field-grid select,.field-grid textarea,
+  .searchbar input,.familybox-form input,.req-title-input{font-size:16px;}
   .btn-sm{font-size:14.5px;}
   .pill, .sync-badge, .admin-toggle, .card-count{font-size:12px;}
 
