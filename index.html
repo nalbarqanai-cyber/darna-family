@@ -622,7 +622,15 @@ function refreshAuthState(){
   });
 }
 function requestMagicLink(email){
+  try{ localStorage.setItem("darna_return_route", window.location.hash||"#/"); }catch(e){}
   return sb.auth.signInWithOtp({ email: email, options:{ emailRedirectTo: window.location.origin+window.location.pathname } });
+}
+/* بعد رجوع رابط الدخول (Magic Link)، الرابط يحمل #access_token=... بدل مسار الصفحة الأصلي.
+   نستعيد آخر صفحة كان عليها المستخدم (محفوظة بـ localStorage قبل إرسال الرابط) بدل ما نرجّعه للرئيسية دائمًا. */
+function handleAuthRedirectReturnRoute(){
+  var returnRoute="#/";
+  try{ returnRoute=localStorage.getItem("darna_return_route")||"#/"; localStorage.removeItem("darna_return_route"); }catch(e){}
+  try{ history.replaceState(null, "", window.location.pathname+window.location.search+returnRoute); }catch(e){}
 }
 function signOutAdmin(){
   return sb.auth.signOut();
@@ -2011,7 +2019,7 @@ function init(){
     session=sess;
     isAdmin=!!(session && session.user && isAllowedAdminEmail(session.user.email));
     if(window.location.hash && window.location.hash.indexOf("access_token")>-1){
-      try{ history.replaceState(null, "", window.location.pathname+window.location.search); }catch(e){}
+      handleAuthRedirectReturnRoute();
       route=parseRoute();
     }
     loadPending().then(renderApp);
