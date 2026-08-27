@@ -105,8 +105,9 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 /* people strip (home) */
 .people-strip-wrap{padding:6px 16px 14px;}
 .people-strip{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
-@media (max-width:640px){ .people-strip{display:flex; overflow-x:auto; padding-bottom:2px;} }
-.person-card{flex:none; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:var(--ink); padding:10px 4px; border-radius:var(--radius-md); min-width:64px;}
+@media (max-width:640px){ .people-strip{grid-template-columns:repeat(4,1fr); gap:10px;} }
+@media (max-width:380px){ .people-strip{grid-template-columns:repeat(3,1fr);} }
+.person-card{display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:var(--ink); padding:10px 4px; border-radius:var(--radius-md); min-width:0;}
 .person-card:hover{background:var(--cell-bg);}
 .person-avatar{width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; border:1px solid var(--line); flex:none;}
 .person-name{font-size:12px; font-weight:600; text-align:center; white-space:nowrap;}
@@ -330,6 +331,52 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
 .toast-action{background:none; border:none; color:var(--green-100); font-weight:700; font-size:13px; white-space:nowrap;}
 
 .foot-note{max-width:1180px; margin:8px auto 40px; padding:0 16px; font-size:12px; color:var(--ink-faint); text-align:center;}
+
+/* ---------- mobile / small screen: comfortable admin editing ---------- */
+@media (max-width:640px){
+  html{-webkit-text-size-adjust:100%; text-size-adjust:100%;}
+  body{overflow-x:hidden;}
+  /* منع تكبير iOS التلقائي عند التركيز على أي حقل (سبب شائع لإحساس "الواجهة تصغّرت/ترزّحت") */
+  input, select, textarea, button{font-size:16px;}
+  .btn-sm{font-size:14.5px;}
+  .pill, .sync-badge, .admin-toggle, .card-count{font-size:12px;}
+
+  /* أزرار وأهداف لمس أكبر */
+  .icon-btn{width:40px; height:40px; border-radius:11px;}
+  .icon-btn .icon{width:18px; height:18px;}
+  .star-btn{padding:8px;}
+  .mood-btn{width:44px; height:44px; font-size:19px;}
+  .cal-nav-btn{width:40px; height:40px;}
+  .admin-toggle{padding:9px 14px;}
+  .btn{padding:13px 18px; min-height:44px;}
+  .btn-sm{padding:10px 16px; min-height:40px;}
+  .search-clear{width:32px; height:32px;}
+  .quickadd-tile{padding:14px 6px; min-height:76px; font-size:12px;}
+  .quickadd-tile .icon{width:20px; height:20px;}
+  .quickadd-grid{grid-template-columns:repeat(3,1fr); gap:8px;}
+
+  /* الحقول تصير كل وحدة بعرض كامل عشان ما تتزاحم */
+  .field-grid{gap:12px;}
+  .field-grid .field{flex:1 1 100%; min-width:0;}
+
+  /* Forms والبطاقات بعرض الجوال كامل بدون تضييق زائد */
+  .entity-form-card{padding:14px;}
+  .shell, .page-nav, .identity-banner, .searchbar-wrap, #searchResults,
+  .people-strip-wrap, .shortcuts-wrap, .quickadd-grid-wrap, .entity-form-host,
+  .person-hero-wrap, .section-title-row, .section-wrap, .pending-wrap,
+  .home-grid, .foot-note{ padding-inline:12px; }
+
+  .person-hero-name{font-size:19px;}
+  .person-avatar{width:44px; height:44px; font-size:19px;}
+  .person-hero .person-avatar{width:52px; height:52px; font-size:24px;}
+
+  .familybox-form input#familyboxName{flex:1 1 100%;}
+  .familybox-form input#familyboxText{flex:1 1 100%;}
+  .familybox-form .btn{width:100%;}
+}
+@media (max-width:360px){
+  .quickadd-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
@@ -491,6 +538,13 @@ var NUMBER_CATEGORIES=["فني مكيفات","سباك","كهربائي","شرك
 var SUPABASE_URL="https://puxvfngwbgoqxqaphayv.supabase.co";
 var SUPABASE_ANON_KEY="sb_publishable_Fu-_Lf8TlAf3bjynAHr7Ug_uwLbO2Jq";
 var ADMIN_EMAIL="n.albarqan.ai@gmail.com";
+/* قائمة مؤقتة لأغراض الاختبار: أي بريد هنا يقدر يدخل كمدير (يطابق قائمة السماح بقاعدة البيانات RLS). */
+var ADMIN_EMAILS=["n.albarqan.ai@gmail.com","Ftoo.1998-@hotmail.com","sama.1090s3@gmail.com"];
+function isAllowedAdminEmail(email){
+  if(!email) return false;
+  var e=String(email).toLowerCase();
+  return ADMIN_EMAILS.some(function(a){ return String(a).toLowerCase()===e; });
+}
 var sb=(typeof window!=="undefined" && window.supabase && typeof window.supabase.createClient==="function")
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
@@ -564,7 +618,7 @@ function refreshAuthState(){
   if(!sb) return Promise.resolve();
   return sb.auth.getSession().then(function(res){
     session=res.data && res.data.session;
-    isAdmin=!!(session && session.user && session.user.email===ADMIN_EMAIL);
+    isAdmin=!!(session && session.user && isAllowedAdminEmail(session.user.email));
   });
 }
 function requestMagicLink(email){
@@ -745,7 +799,11 @@ var ENTITY_CONFIG={
   }
 };
 
-function addedByVal(f){ return f.addedBy!=null?f.addedBy:(getDisplayName()||""); }
+function currentActorLabel(){
+  if(isAdmin && session && session.user && session.user.email) return session.user.email;
+  return getDisplayName()||"";
+}
+function addedByVal(f){ return (f.addedBy!=null && f.addedBy!=="") ? f.addedBy : currentActorLabel(); }
 
 function saveEntity(entity, mode, id, fields){
   var cfg=ENTITY_CONFIG[entity];
@@ -793,7 +851,7 @@ function toggleFavorite(entity, id){
 }
 function logActivity(text, entityType){
   if(!isAdmin || !sb) return;
-  sb.from("activity_log").insert({actor:getDisplayName()||"المدير", action_text:text, entity_type:entityType}).select().single().then(function(res){
+  sb.from("activity_log").insert({actor:currentActorLabel()||"المدير", action_text:text, entity_type:entityType}).select().single().then(function(res){
     if(!res.error && res.data){
       state.activity.unshift(rowToActivity(res.data));
       state.activity=state.activity.slice(0,15);
@@ -1283,12 +1341,17 @@ function entityFieldsHtml(ef){
           fieldSelect("ef-forWhom","يخص مين؟ (إن لزم)",FOR_WHOM_OPTIONS,f.forWhom||"",false)+'</div>'+
         '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
     case "reference":
+      var kind = f.type || (ef.mode==="edit" ? (f.entity?"ref":"info") : "both");
+      var refNameLabel = kind==="info" ? "اسم المعلومة" : "نوع المرجع";
+      var refNamePlaceholder = kind==="info" ? 'placeholder="مثال: رقم الجوال"' : 'placeholder="مثال: رقم ملف"';
+      var entityFieldHtml = kind==="info" ? "" : field("ef-entity","الجهة","text",f.entity,'placeholder="مثال: مستشفى الحبيب"');
+      var categoryFieldHtml = kind==="ref" ? "" : field("ef-category","التصنيف (اختياري)","text",f.category);
       return '<div class="field-grid">'+fieldSelect("ef-person","الشخص",PERSON_ONLY_OPTIONS,f.person||(ef.presetPerson||""),locked)+
-          field("ef-entity","الجهة","text",f.entity,'placeholder="مثال: مستشفى الحبيب"')+
-          field("ef-refType","نوع المعلومة","text",f.refType,'placeholder="مثال: رقم ملف"')+'</div>'+
-        '<div class="field-grid">'+field("ef-refValue","الرقم أو المرجع","text",f.refValue)+
-          field("ef-category","تصنيف اختياري","text",f.category)+'</div>'+
-        '<div class="field-grid">'+field("ef-note","ملاحظة","text",f.note)+'</div>';
+          entityFieldHtml+
+          field("ef-refType",refNameLabel,"text",f.refType,refNamePlaceholder)+'</div>'+
+        '<div class="field-grid">'+field("ef-refValue","القيمة","text",f.refValue)+
+          categoryFieldHtml+'</div>'+
+        '<div class="field-grid">'+field("ef-note","ملاحظة (اختياري)","text",f.note)+'</div>';
     case "note":
       return '<div class="field-grid">'+fieldSelect("ef-person","الشخص",PERSON_ONLY_OPTIONS,f.person||(ef.presetPerson||""),locked)+'</div>'+
         '<div class="field-grid">'+fieldTextarea("ef-text","الملاحظة",f.text)+'</div>';
@@ -1596,7 +1659,8 @@ function renderPersonPage(person){
     personQuickAddBtn("task","مهمة","tag")+
     personQuickAddBtn("item","تذكير","bell","تذكير")+
     personQuickAddBtn("note","ملاحظة","note")+
-    personQuickAddBtn("reference","معلومة / مرجع","hash")+
+    personQuickAddBtn("reference","معلومة أساسية","hash","info")+
+    personQuickAddBtn("reference","مرجع مهم","hash","ref")+
   '</div></div>';
 
   var formHost='<div class="entity-form-host hidden" id="entityFormHost"></div>';
@@ -1622,8 +1686,11 @@ function renderPersonPage(person){
 
   var refsCard='<div class="section-wrap" style="padding-top:0;">'+
     '<div class="card"><div class="card-head"><h3 class="card-title">'+icon("hash")+' معلومات الشخص — المراجع والأرقام المهمة</h3>'+
-      (isAdmin?'<button type="button" class="btn btn-primary btn-sm" data-action="open-add" data-entity="reference">'+icon("plus")+' أضف معلومة / مرجع</button>':'')+
-    '</div>'+(refs.length?'<div class="list">'+refs.map(function(rf){return referenceRow(rf,false);}).join("")+'</div>':'<div class="empty-note">لا توجد مراجع بعد لهذا الشخص.</div>')+
+      (isAdmin?('<div class="confirm-actions" style="margin:0;">'+
+        '<button type="button" class="btn btn-primary btn-sm" data-action="open-add" data-entity="reference" data-type="info">'+icon("plus")+' أضف معلومة</button>'+
+        '<button type="button" class="btn btn-ghost btn-sm" data-action="open-add" data-entity="reference" data-type="ref">'+icon("plus")+' أضف مرجع</button>'+
+      '</div>'):'')+
+    '</div>'+(refs.length?'<div class="list">'+refs.map(function(rf){return referenceRow(rf,false);}).join("")+'</div>':'<div class="empty-note">لا توجد معلومات أو مراجع بعد لهذا الشخص.</div>')+
     '</div></div>';
 
   return hero+addGrid+formHost+grid+refsCard;
@@ -1942,7 +2009,7 @@ function init(){
 
   sb.auth.onAuthStateChange(function(_event, sess){
     session=sess;
-    isAdmin=!!(session && session.user && session.user.email===ADMIN_EMAIL);
+    isAdmin=!!(session && session.user && isAllowedAdminEmail(session.user.email));
     if(window.location.hash && window.location.hash.indexOf("access_token")>-1){
       try{ history.replaceState(null, "", window.location.pathname+window.location.search); }catch(e){}
       route=parseRoute();
