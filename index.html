@@ -1707,7 +1707,7 @@ function renderPersonPage(person){
     '</div>'+(refs.length?'<div class="list">'+refs.map(function(rf){return referenceRow(rf,false);}).join("")+'</div>':'<div class="empty-note">لا توجد معلومات أو مراجع بعد لهذا الشخص.</div>')+
     '</div></div>';
 
-  return hero+addGrid+formHost+grid+refsCard;
+  return hero+(isAdmin?addGrid:"")+formHost+grid+refsCard;
 }
 
 /* ---------- section pages ---------- */
